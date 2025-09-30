@@ -1,0 +1,11 @@
+# requirements.txt para proyecto TechDocs con MkDocs
+
+# $ source .venv/bin/activate
+# $ pip uninstall -y mkdocs mkdocs-material mkdocs-awesome-pages-plugin click
+# $ pip install --upgrade --force-reinstall -r requirements.txt
+# $ pip check
+# $mkdocs --version
+
+mkdocs>=1.6,<2.0
+mkdocs-material>=9.6,<10.0
+mkdocs-awesome-pages-plugin>=2.7,<3.0
