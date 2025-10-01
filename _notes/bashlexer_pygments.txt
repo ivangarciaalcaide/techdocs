@@ -1,0 +1,122 @@
+El paquete pygments es una biblioteca de resaltado de sintaxis para Python que soporta una amplia variedad
+de lenguajes de programación y formatos de archivo. Proporciona una forma sencilla de resaltar el código
+fuente en aplicaciones web, documentos y otros entornos.
+
+He modificado el código del lexer de bash en pygments para que reconozca y resalte correctamente muchos más
+comandos y aplicaciones de las que trae por defecto.
+
+Si se actualiza el paquete pygments, es posible que se pierdan estas modificaciones, por lo que dejo aquí la clase
+BashLexer modificada para que pueda ser copiada y pegada en caso de necesidad en el fichero:
+
+.venv/lib/python3.12/site-packages/pygments/lexers/shell.py
+
+========================
+class BashLexer(RegexLexer):
+    """
+    Lexer for (ba|k|z|)sh shell scripts.
+    """
+
+    name = 'Bash'
+    aliases = ['bash', 'sh', 'ksh', 'zsh', 'shell', 'openrc']
+    filenames = ['*.sh', '*.ksh', '*.bash', '*.ebuild', '*.eclass',
+                 '*.exheres-0', '*.exlib', '*.zsh',
+                 '.bashrc', 'bashrc', '.bash_*', 'bash_*', 'zshrc', '.zshrc',
+                 '.kshrc', 'kshrc',
+                 'PKGBUILD']
+    mimetypes = ['application/x-sh', 'application/x-shellscript', 'text/x-shellscript']
+    url = 'https://en.wikipedia.org/wiki/Unix_shell'
+    version_added = '0.6'
+
+    tokens = {
+        'root': [
+            include('basic'),
+            (r'`', String.Backtick, 'backticks'),
+            include('data'),
+            include('interp'),
+        ],
+        'interp': [
+            (r'\$\(\(', Keyword, 'math'),
+            (r'\$\(', Keyword, 'paren'),
+            (r'\$\{#?', String.Interpol, 'curly'),
+            (r'\$[a-zA-Z_]\w*', Name.Variable),  # user variable
+            (r'\$(?:\d+|[#$?!_*@-])', Name.Variable),      # builtin
+            (r'\$', Text),
+        ],
+        'basic': [
+            # Palabras reservadas de Bash (ordenadas alfabéticamente)
+            (r'\b(alias|bg|break|builtin|case|cd|continue|do|done|elif|else|esac|eval|exit|fg|fi|for|function|if|in|select|then|return|shift|until|while)\b',
+             Keyword),
+
+            # Comandos internos y utilidades de Linux (orden alfabético)
+            (r'\b(a2dissite|a2dismod|a2disconf|a2ensite|a2enmod|a2enconf|awk|basename|bash|bc|bzip2|cal|cat|chmod|chown|cmp|comm|command|compgen|complete|cp|cron|crontab|curl|cut|date|dd|df|diff|dig|dirs|dirname|docker|du|echo|env|expr|fg|find|fmt|fold|free|getopts|git|grep|gunzip|gzip|hash|head|help|history|hostname|id|ifconfig|jobs|kill|let|ln|locate|logname|ls|lsof|make|man|mkdir|mknod|more|mount|mv|nano|netstat|nice|nl|nohup|nslookup|passwd|ping|popd|ps|pwd|read|readlink|rm|rmdir|rsync|scp|sed|seq|sh|sleep|sort|split|ssh|stat|sudo|systemctl|tail|tar|tee|time|times|top|touch|tr|uname|uniq|uptime|useradd|usermod|users|vi|vim|wait|wc|wget|who|whoami|xargs|zip|unzip)(?=[\s)`])',
+             Name.Builtin),
+
+            # Opciones de comando (empiezan por - o --)
+            (r'(?<=\s)(-[\w-]+|--[\w-]+)', Name.Attribute),  # usamos Name.Attribute para diferenciarlas
+
+            # Shebang
+            (r'\A#!.+\n', Comment.Hashbang),
+            # Comentarios
+            (r'#.*\n', Comment.Single),
+            # Escape de caracteres
+            (r'\\[\w\W]', String.Escape),
+            # Variables con asignación
+            (r'(\b\w+)(\s*)(\+?=)', bygroups(Name.Variable, Whitespace, Operator)),
+            # Operadores y símbolos
+            (r'[\[\]{}()=]', Operator),
+            (r'<<<', Operator),  # here-string
+            (r'<<-?\s*(\'?)\\?(\w+)[\w\W]+?\2', String),
+            (r'&&|\|\|', Operator),
+        ],
+        'data': [
+            (r'(?s)\$?"(\\.|[^"\\$])*"', String.Double),
+            (r'"', String.Double, 'string'),
+            (r"(?s)\$'(\\\\|\\[0-7]+|\\.|[^'\\])*'", String.Single),
+            (r"(?s)'.*?'", String.Single),
+            (r';', Punctuation),
+            (r'&', Punctuation),
+            (r'\|', Punctuation),
+            (r'\s+', Whitespace),
+            (r'\d+\b', Number),
+            (r'[^=\s\[\]{}()$"\'`\\<&|;]+', Text),
+            (r'<', Text),
+        ],
+        'string': [
+            (r'"', String.Double, '#pop'),
+            (r'(?s)(\\\\|\\[0-7]+|\\.|[^"\\$])+', String.Double),
+            include('interp'),
+        ],
+        'curly': [
+            (r'\}', String.Interpol, '#pop'),
+            (r':-', Keyword),
+            (r'\w+', Name.Variable),
+            (r'[^}:"\'`$\\]+', Punctuation),
+            (r':', Punctuation),
+            include('root'),
+        ],
+        'paren': [
+            (r'\)', Keyword, '#pop'),
+            include('root'),
+        ],
+        'math': [
+            (r'\)\)', Keyword, '#pop'),
+            (r'\*\*|\|\||<<|>>|[-+*/%^|&<>]', Operator),
+            (r'\d+#[\da-zA-Z]+', Number),
+            (r'\d+#(?! )', Number),
+            (r'0[xX][\da-fA-F]+', Number),
+            (r'\d+', Number),
+            (r'[a-zA-Z_]\w*', Name.Variable),  # user variable
+            include('root'),
+        ],
+        'backticks': [
+            (r'`', String.Backtick, '#pop'),
+            include('root'),
+        ],
+    }
+
+    def analyse_text(text):
+        if shebang_matches(text, r'(ba|z|)sh'):
+            return 1
+        if text.startswith('$ '):
+            return 0.2
+====================
