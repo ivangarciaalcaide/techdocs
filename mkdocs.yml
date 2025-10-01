@@ -56,3 +56,5 @@ nav:
   - "": index.md
   - GNU/Linux:
       - Configuración Apache2 para Adminer: configuracion_apache_para_adminer.md
+  - Manuales:
+      - Entendiendo UEFI: 01-entendiendo_uefi_introduccion.md

@@ -6,3 +6,6 @@ Aquí redactaré mis trucos y documentos que uso para configurar mis sistemas y 
 
 - [Configuración de Apache para Adminer](configuracion_apache_para_adminer.md)
 
+## Manuales
+- [Entendiendo UEFI](01-entendiendo_uefi_introduccion.md)
+
