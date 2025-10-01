@@ -16,6 +16,7 @@ theme:
   features:
     - content.code.annotate
     - content.code.copy
+    - content.tabs.link
 
   palette:
     primary: 'blue'
@@ -41,3 +42,17 @@ markdown_extensions:
          use_pygments: true
          linenums: true
      - pymdownx.superfences
+     - attr_list
+     - admonition
+     - pymdownx.tasklist:
+         custom_checkbox: true
+         clickable_checkbox: true
+     - pymdownx.tilde
+     - toc:
+         permalink: true
+         toc_depth: 2
+
+nav:
+  - "": index.md
+  - GNU/Linux:
+      -Configuración Apache2 para Adminer: configuracion_apache2_adminer.md
