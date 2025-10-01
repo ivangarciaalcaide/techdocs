@@ -55,4 +55,4 @@ markdown_extensions:
 nav:
   - "": index.md
   - GNU/Linux:
-      -Configuración Apache2 para Adminer: configuracion_apache2_adminer.md
+      - Configuración Apache2 para Adminer: configuracion_apache_para_adminer.md
