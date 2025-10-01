@@ -9,6 +9,8 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 * `mkdocs build` - Build the documentation site.
 * `mkdocs -h` - Print help message and exit.
 
+- [Configuración de Apache para Adminer](configuracion_apache_para_adminer.md) - Sencillas y deliciosas magdalenas caseras listas para disfrutar.
+
 ## Project layout
 
     mkdocs.yml    # The configuration file.

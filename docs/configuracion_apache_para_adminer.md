@@ -22,16 +22,15 @@ Yo utilizo la versión **MySQL en inglés** que es la más ligera y funciona per
 **PHP** que descargo y pongo en el servidor web. Por ejemplo:
 
 ```bash
-# mkdir -p /var/www/adminer
-# wget  https://www.adminer.org/latest-mysql-en.php -O /var/www/adminer/index.php
-# chown -R www-data:www-data /var/www/adminer
+mkdir -p /var/www/adminer
+wget  https://www.adminer.org/latest-mysql-en.php -O /var/www/adminer/index.php
+chown -R www-data:www-data /var/www/adminer
 ```
-
 Esta es la configuración que utilizo en **Apache2** para ponerlo en una **URL** terminada en `/adminer`:
 
 📂 ***/etc/apache2/conf-available/adminer.conf***
 
-```apache
+```apacheconf
 Alias /adminer /var/www/adminer/
 
 <Directory "/var/www/adminer/">
@@ -54,8 +53,8 @@ Alias /adminer /var/www/adminer/
 Para activarlo:
 
 ```bash
-# a2enconf adminer
-# systemctl reload apache2
+a2enconf adminer
+systemctl reload apache2
 ```
 
 ---
