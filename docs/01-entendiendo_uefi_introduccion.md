@@ -1,9 +1,9 @@
 # Entendiendo UEFI
 
 ---
-## Introducción
+## 1. Introducción
 
-### Contexto: por qúe necesitamos UEFI
+### 1.1 Contexto: por qúe necesitamos UEFI
 
 Cuando queremos ejecutar un programa, el ordenador **deberá** leer de algún lugar sus instrucciones (por ejemplo, desde
 un disco duro o un pendrive) y cargarlas en la **memoria RAM**. La **CPU** ejecuta las instrucciones desde la RAM.
@@ -14,7 +14,7 @@ lanzarlo para que todo empiece a funcionar.
 
 ---
 
-### Breve historia: BIOS → EFI → UEFI
+### 1.2 Breve historia: BIOS → EFI → UEFI
 
 Haciendo un poco de historia, de esto se encargaba la **BIOS** (desde 1975). Esto es un circuito integrado que se 
 encontraba en las placas madre y que contenía, entre otras cosas, las instrucciones necesarias para:

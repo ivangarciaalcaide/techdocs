@@ -50,11 +50,14 @@ markdown_extensions:
      - pymdownx.tilde
      - toc:
          permalink: true
-         toc_depth: 2
+         toc_depth: 3
 
 nav:
   - "": index.md
   - GNU/Linux:
       - Configuración Apache2 para Adminer: configuracion_apache_para_adminer.md
   - Manuales:
-      - Entendiendo UEFI: 01-entendiendo_uefi_introduccion.md
+      - Entendiendo UEFI:
+        - Introducción: 01-entendiendo_uefi_introduccion.md
+        - Conceptos básicos de almacenamiento: 02-entendiendo-uefi_conceptos_basicos_almacenamiento.md
+        - Glosario: 99-entendiendo_uefi_glosario.md
