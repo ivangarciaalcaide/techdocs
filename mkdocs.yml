@@ -34,6 +34,10 @@ extra_css:
   - assets/stylesheets/footer.css
   - assets/stylesheets/extra.css
 
+plugins:
+  - search
+  - include-markdown
+
 markdown_extensions:
      - codehilite:
          guess_lang: false

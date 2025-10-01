@@ -156,3 +156,7 @@ Disco /dev/sda (GPT)
 
 > **Nota**: Nunca se debe borrar ni formatear la ESP sin conocer las implicaciones, ya que los sistemas operativos no 
 > arrancarán correctamente.
+
+{%
+    include-markdown "./footer.md"
+%}

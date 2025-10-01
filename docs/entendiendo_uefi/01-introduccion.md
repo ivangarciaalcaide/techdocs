@@ -44,3 +44,8 @@ Intel.
 
 > **Nota:** UEFI es solo una **especificación**. Cada fabricante desarrolla su propia implementación.  
 > La referencia más conocida es [EDK2](https://github.com/tianocore/edk2), escrita en C.
+
+{%
+    include-markdown "./footer.md"
+%}
+

@@ -206,3 +206,7 @@ Características:
 Ejemplo: instalar Linux en modo UEFI requiere crear una partición ESP.
 
 ---
+
+{%
+    include-markdown "./footer.md"
+%}
