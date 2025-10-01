@@ -3,116 +3,206 @@
 ---
 
 <span style="color: red; font-weight: bold;">
-SIN REVISAR A PARTIR DE AQUÍ
+SIN REVISAR 
 </span>
 
 ---
 
-## Arranque
-<a name="arranque"></a>
+Este glosario recoge conceptos clave relacionados con UEFI, BIOS, particiones, sistemas de archivos y arranque, con explicaciones ampliadas, ejemplos y diagramas simplificados.
 
-El **arranque** es el proceso por el cual un ordenador carga el sistema operativo desde una unidad de almacenamiento hasta la memoria RAM y empieza su ejecución.
+---
+
+## Arranque
+El **arranque** es el proceso por el cual un ordenador pasa de estar apagado a ejecutar un sistema operativo.  
+Incluye varias fases:
+
+1. **POST (Power-On Self Test):** comprobaciones de hardware (RAM, CPU, dispositivos básicos).  
+2. **Firmware (BIOS/UEFI):** inicializa hardware y busca un medio de arranque válido.  
+3. **Gestor de arranque:** programa que indica qué sistema operativo o kernel cargar.  
+4. **Carga del kernel:** el sistema operativo toma el control del hardware.  
+
+```
+[Encendido] → [POST] → [Firmware] → [Gestor de arranque] → [Kernel] → [Sistema operativo]
+```
+
+Ejemplo: En un PC moderno con UEFI, el firmware busca en la **partición EFI (ESP)** un archivo `.efi` (por ejemplo, `grubx64.efi`) y lo ejecuta.
 
 ---
 
 ## BIOS
-<a name="bios"></a>
+La **BIOS** (Basic Input/Output System) es el firmware tradicional en PCs (desde 1975).  
+Funciones principales:
+- Inicializa el hardware.  
+- Localiza un dispositivo de arranque.  
+- Carga el MBR y transfiere el control.  
 
-La **BIOS** (Basic Input/Output System) es el firmware tradicional de los ordenadores que inicializa el hardware y carga el sistema operativo desde un dispositivo de arranque.
+**Limitaciones:**
+- Máx. discos de 2 TB (por usar direcciones de 32 bits en MBR).  
+- Solo 4 particiones primarias.  
+- Interfaz básica y lenta.  
 
----
-
-## Cabecera GPT
-<a name="cabecera-gpt"></a>
-
-Parte de la **tabla de particiones GPT** que contiene información sobre las particiones del disco y su integridad mediante CRC32. Existe una cabecera principal al inicio y una de respaldo al final del disco.
-
----
-
-## Disco
-<a name="disco"></a>
-
-Un **disco** es un dispositivo de almacenamiento permanente, como un HDD o SSD, que contiene una o varias particiones donde se guardan datos.
+Ejemplo visual de arranque BIOS:  
+```
+[BIOS] → [MBR (primer sector de disco)] → [Bootloader] → [Sistema operativo]
+```
 
 ---
 
-## EFI
-<a name="efi"></a>
+## BCD (Boot Configuration Data)
+El **BCD** es la base de datos de configuración de arranque de Windows, que sustituye al antiguo `boot.ini`.  
+Se guarda en la partición EFI y es gestionado por `Windows Boot Manager`.  
 
-**EFI** (Extensible Firmware Interface) es la interfaz desarrollada por Intel alrededor del año 2000 que sustituyó a la BIOS en placas Itanium, proporcionando un arranque más moderno y flexible.
+Herramientas:
+- `bcdboot`: genera los ficheros de arranque.  
+  ```bash
+  bcdboot C:\Windows /s S: /f UEFI
+  ```
+- `bcdedit`: permite inspeccionar y modificar las entradas del BCD.  
+
+Ejemplo de consulta con `bcdedit`:
+```
+Windows Boot Loader
+-------------------
+identifier              {current}
+device                  partition=C:
+path                    \Windows\system32\winload.efi
+description             Windows 10
+```
+
+---
+
+## EFI (Extensible Firmware Interface)
+Desarrollada por Intel en 2000 para Itanium, reemplazó la BIOS clásica.  
+Ventajas frente a BIOS:
+- Soporte para discos grandes (GPT).  
+- Entorno modular y extensible.  
+- Drivers cargables en tiempo de arranque.  
+
+Ejemplo: Apple usó EFI antes de la estandarización como UEFI.
 
 ---
 
 ## ESP (EFI System Partition)
-<a name="esp"></a>
+La **partición del sistema EFI** (ESP) es obligatoria en discos con GPT para sistemas que usen UEFI.  
 
-Partición obligatoria en sistemas UEFI que contiene ficheros de arranque `.efi`. Normalmente en **FAT32**, con tamaño entre 100–512 MB, y usada por sistemas operativos y gestores de arranque como GRUB2 o Windows Boot Manager.
+Características:
+- Formato: FAT32.  
+- Tamaño habitual: 100-550 MB.  
+- Contiene bootloaders, drivers y ficheros `.efi`.  
 
----
-
-## Formato / Formatear
-<a name="formato"></a>
-
-**Formatear** es preparar una unidad o partición para almacenar datos creando un **sistema de archivos**.  
-El **formato** determina la estructura de almacenamiento, compatibilidad y características del sistema de archivos.
+Ejemplo de estructura de ESP:
+```
+/EFI
+ ├── Microsoft/Boot/bootmgfw.efi
+ ├── Boot/bootx64.efi
+ └── grub/grubx64.efi
+```
 
 ---
 
 ## Gestor de arranque
-<a name="gestor-arranque"></a>
+Un **gestor de arranque** permite seleccionar y cargar sistemas operativos.  
 
-Programa que se ejecuta desde la BIOS o UEFI para cargar un sistema operativo.  
-Ejemplos: **GRUB2**, **Windows Boot Manager**.
+Ejemplos:
+- **GRUB2**: usado en Linux.  
+- **Windows Boot Manager**: carga Windows.  
+- **rEFInd**: alternativo y multiplataforma.  
+
+Ejemplo visual:  
+```
+UEFI → grubx64.efi → menú de GRUB → elegir Ubuntu → cargar kernel Linux
+```
 
 ---
 
-## MBR
-<a name="mbr"></a>
+## GPT (GUID Partition Table)
+Tabla de particiones moderna, usada con UEFI.  
 
-**MBR** (Master Boot Record) es un esquema de particionamiento antiguo usado en discos compatibles con BIOS.  
-Contiene un pequeño código de arranque y una tabla de particiones (máx. 4 primarias).
+Características:
+- Identifica particiones con GUID (identificadores únicos).  
+- Soporta discos de hasta 9.4 ZB.  
+- Hasta 128 particiones en Windows (sin necesidad de particiones extendidas).  
+
+Ejemplo visual de disco GPT (3 particiones):
+```
+[ ESP | Partición Linux | Partición Datos ]
+```
+
+---
+
+## MBR (Master Boot Record)
+Tabla de particiones tradicional usada con BIOS.  
+
+Características:
+- Usa 32 bits → discos hasta 2 TB.  
+- 4 particiones primarias.  
+- Primer sector del disco (512 bytes) contiene: código de arranque + tabla de particiones.  
+
+Ejemplo visual de disco MBR:
+```
+[ MBR | Partición 1 | Partición 2 | Partición 3 | Partición 4 ]
+```
 
 ---
 
 ## Partición
-<a name="particion"></a>
+Una **partición** es una división lógica de un disco físico.  
+Permite tener distintos sistemas operativos o separar datos.  
 
-Sección de un disco que se comporta como una unidad independiente, con su propio sistema de archivos. Permite almacenar datos y arrancar sistemas operativos.
+Ejemplo:  
+- Disco de 1 TB:  
+  - 200 GB → Windows  
+  - 200 GB → Linux  
+  - 600 GB → Datos compartidos  
 
 ---
 
 ## Sistema de archivos
-<a name="sistema-de-archivos"></a>
+El **sistema de archivos** define cómo se organizan y almacenan los datos dentro de una partición.  
 
-Forma en que un sistema operativo organiza y gestiona los datos en una unidad o partición.  
-Ejemplos: **FAT32**, **NTFS**, **ext4**, **APFS**.
+Ejemplos:  
+- **FAT32:** usado en ESP por compatibilidad.  
+- **NTFS:** Windows.  
+- **ext4:** Linux.  
 
----
-
-## Tabla de particiones
-<a name="tabla-particiones"></a>
-
-Estructura que indica cómo está dividido un disco y qué contiene cada partición: tipo de sistema de archivos, tamaño, bandera de arranque, etc. Puede ser **MBR** o **GPT**.
-
----
-
-## UEFI
-<a name="uefi"></a>
-
-**UEFI** (Unified Extensible Firmware Interface) es la especificación de interfaz de firmware que reemplaza a la BIOS en la mayoría de los equipos modernos, permitiendo un arranque más flexible y seguro.
+Diagrama simplificado de un archivo en un FS:  
+```
+[Tabla de inodos] → [Bloques de datos]
+archivo.txt → apunta a → bloque #123, bloque #124...
+```
 
 ---
 
 ## Unidad
-<a name="unidad"></a>
+El término **unidad** puede referirse a:
 
-Cualquier dispositivo de almacenamiento que pueda contener datos y ser reconocido por un sistema operativo.  
-Ejemplos: discos duros, SSD, pendrives, tarjetas SD.
+1. Un dispositivo físico de almacenamiento (ej. disco duro, SSD, pendrive).  
+2. Una partición lógica identificada por el sistema operativo (ej. C:, /dev/sda1).  
+
+Ejemplo en Linux:
+```
+Dispositivo físico: /dev/sda
+Particiones: /dev/sda1, /dev/sda2
+```
+
+Ejemplo en Windows:
+```
+Disco físico 0
+  C: → Sistema
+  D: → Datos
+```
 
 ---
 
-## Windows Boot Manager / BCD
-<a name="bcd"></a>
+## UEFI (Unified Extensible Firmware Interface)
+Estandarización de EFI (2005 en adelante).  
+Especificación que reemplaza BIOS con un entorno modular y moderno.  
 
-Gestor de arranque de Windows que se apoya en la **partición EFI**.  
-Incluye herramientas como `bcdboot` y `bcdedit` para configurar entradas de arranque y ficheros de arranque `.efi`.
+Características:  
+- Interfaz gráfica posible (mouse y drivers).  
+- Soporte para GPT.  
+- Entorno de prearranque con aplicaciones `.efi`.  
+
+Ejemplo: instalar Linux en modo UEFI requiere crear una partición ESP.
+
+---
