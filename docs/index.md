@@ -4,5 +4,5 @@ Aquí redactaré mis trucos y documentos que uso para configurar mis sistemas y 
 
 ## GNU/Linux
 
-- [Configuración de Apache para Adminer](configuracion_apache_para_adminer.md) - Sencillas y deliciosas magdalenas caseras listas para disfrutar.
+- [Configuración de Apache para Adminer](configuracion_apache_para_adminer.md)
 
