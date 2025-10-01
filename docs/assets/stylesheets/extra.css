@@ -1,0 +1,64 @@
+.md-typeset ol.task-list {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 2em;
+    margin-left: 0;
+}
+
+.md-typeset ol.task-list > li {
+    counter-increment: step;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5em;
+}
+
+.md-typeset ol.task-list > li label.task-list-control {
+    margin-right: 0.3em;
+    flex-shrink: 0;
+}
+
+.md-typeset ol.task-list > li::before {
+    content: counter(step) ".";
+    margin-right: 0.5em;
+    font-weight: bold;
+}
+
+.md-typeset ol:not(.task-list),
+.md-typeset ul:not(.task-list) {
+    padding-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+.md-typeset h2 {
+    padding-left: 0 !important;
+}
+.md-typeset h2 ~ * {
+    padding-left: 1.5em;
+}
+
+.md-typeset h3 ~ ol.task-list {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 3em;
+    margin-left: 0;
+}
+
+.md-nav__title {
+    color: var(--md-primary-fg-color--dark);
+    display: block;
+    font-weight: 700;
+    overflow: hidden;
+    padding: 0 .6rem;
+    text-overflow: ellipsis;
+    font-size: medium;
+}
+
+/* Poner en negrita los títulos de grupo en el menú lateral */
+.md-nav__item--nested > .md-nav__link {
+    font-weight: bold;
+}
+
+/* resaltar opciones de comando tipo -x o --option */
+.md-typeset .highlight .c { color: #2ecc71; font-weight: bold; }     /* Comentarios */
+.md-typeset .highlight .n { color: #3498db; }                        /* Nombres normales */
+.md-typeset .highlight .na { color: #27ae60; }    /* Name.Attribute = opciones */

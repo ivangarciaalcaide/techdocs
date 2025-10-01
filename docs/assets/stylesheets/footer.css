@@ -1,0 +1,55 @@
+/* footer.css: estilos para el footer personalizado */
+
+/* Centrar todo el footer */
+.md-footer .md-footer-meta__inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Primera línea: autor + licencia */
+.md-footer-line1 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    flex-wrap: wrap;
+}
+
+/* Separador vertical */
+.md-footer-line1 .separator {
+    color: #888;
+}
+
+/* Logo de la licencia */
+.md-footer-line1 .cc-badge {
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    filter: grayscale(100%);
+}
+
+/* Enlaces de autor y licencia */
+.md-footer-author,
+.md-footer-license {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Segunda línea: texto de atribución */
+.md-footer-line2 {
+    font-size: 0.85em;
+    color: inherit;
+}
+
+/* Separación del contenido principal y el footer */
+.md-footer {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-top: 1px solid #e0e0e0; /* línea superior ligera */
+    margin-top: 24px;
+    font-family: Roboto, sans-serif;
+}
