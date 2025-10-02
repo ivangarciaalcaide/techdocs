@@ -100,6 +100,26 @@ Ejemplo de estructura de ESP:
 
 ---
 
+## Formato / Formatear
+**Formatear** es preparar una unidad o partición para almacenar datos creando un **sistema de archivos**.  
+
+El **formato** determina la estructura de almacenamiento, compatibilidad y características del sistema de archivos.
+
+> Formatear una partición con ext4 en Linux:
+> ```bash
+> mkfs.ext4 /dev/sda2
+> ```
+> Ejemplo: Formatear una partición con FAT32 en Linux:
+> ```bash
+> mkfs.fat -F32 /dev/sda1
+> ```
+> Formatear una partición con NTFS en Windows:
+> ```powershell
+> format D: /FS:NTFS
+> ```
+
+---
+
 ## Gestor de arranque
 Un **gestor de arranque** permite seleccionar y cargar sistemas operativos.  
 
@@ -161,7 +181,7 @@ Ejemplo:
 El **sistema de archivos** define cómo se organizan y almacenan los datos dentro de una partición.  
 
 Ejemplos:  
-- **FAT32:** usado en ESP por compatibilidad.  
+- **FAT32:** usado en ESP (partición EFI) por compatibilidad.  
 - **NTFS:** Windows.  
 - **ext4:** Linux.  
 
@@ -208,5 +228,5 @@ Ejemplo: instalar Linux en modo UEFI requiere crear una partición ESP.
 ---
 
 {%
-    include-markdown "./footer.md"
+    include-markdown "./.includes/footer.md"
 %}

@@ -46,6 +46,6 @@ Intel.
 > La referencia más conocida es [EDK2](https://github.com/tianocore/edk2), escrita en C.
 
 {%
-    include-markdown "./footer.md"
+    include-markdown "./.includes/footer.md"
 %}
 

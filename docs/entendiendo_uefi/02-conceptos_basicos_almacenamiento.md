@@ -4,8 +4,6 @@
 
 ## 2. Conceptos básicos de almacenamiento
 
----
-
 ### 2.1 Qué es una partición
 
 Un disco duro puede dividirse en varias **particiones**. Es más, al menos debe tener una partición para que un sistema 
@@ -13,7 +11,7 @@ operativo pueda utilizarlo.
 
 Una partición es una _sección del disco que se comporta como una [unidad](99-glosario.md#unidad) 
 independiente_. Para que pueda almacenar archivos y directorios, debe contener un 
-**[sistema de archivos](99-glosario.md#sistema-de-archivos)** [formateado](99-glosario.md#formato). 
+**[sistema de archivos](99-glosario.md#sistema-de-archivos)** [formateado](99-glosario.md#formato-formatear). 
 Así, contendrá datos del usuario o un sistema operativo con todo lo necesario para que este pueda arrancar.
 
 > **Nota:** Los discos siempre deben tener al menos una partición para poder ser utilizados por un sistema operativo.
@@ -158,5 +156,5 @@ Disco /dev/sda (GPT)
 > arrancarán correctamente.
 
 {%
-    include-markdown "./footer.md"
+    include-markdown "./.includes/footer.md"
 %}
