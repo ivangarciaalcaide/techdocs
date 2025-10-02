@@ -37,6 +37,10 @@ extra_css:
 plugins:
   - search
   - include-markdown
+  - exclude-search:
+      exclude:
+        - entendiendo_uefi/.includes/*
+        - assets/**
 
 markdown_extensions:
      - codehilite:
