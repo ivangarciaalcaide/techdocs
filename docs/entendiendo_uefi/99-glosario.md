@@ -169,11 +169,12 @@ Ejemplo visual de disco MBR:
 Una **partición** es una división lógica de un disco físico.  
 Permite tener distintos sistemas operativos o separar datos.  
 
-Ejemplo:  
+Ejemplo:
+
 - Disco de 1 TB:  
-  - 200 GB → Windows  
-  - 200 GB → Linux  
-  - 600 GB → Datos compartidos  
+     - 200 GB → Windows (Típicamente NTFS)
+     - 200 GB → Linux  (Típicamente ext4)
+     - 600 GB → Datos compartidos  (Típicamente exFAT o NTFS)
 
 ---
 
@@ -224,8 +225,6 @@ Características:
 - Entorno de prearranque con aplicaciones `.efi`.  
 
 Ejemplo: instalar Linux en modo UEFI requiere crear una partición ESP.
-
----
 
 {%
     include-markdown "./.includes/footer.md"

@@ -32,8 +32,14 @@ Disco completo: /dev/sda
 De esta forma, el sistema operativo puede gestionar cada partición de forma independiente y se comportará como si cada
 una fuera un disco diferente.
 
+**GNU/Linux** y **macOs**:
+
 Lo típico es hacer referenica a las particiones como `/dev/sda1`, `/dev/sda2`, etc. donde `sda` es el disco y el 
-número indica la partición. Para los discos NVMe, se usa `nvme0n1p1`, `nvme0n1p2`, etc. Y en Windows, `C:`, `D:`, etc.
+número indica la partición. Para los discos NVMe, se usa `nvme0n1p1`, `nvme0n1p2`, etc.
+
+**Windows**:
+
+En Windows, las particiones se identifican con letras del alfabeto, `C:`, `D:`, etc.
 
 ---
 
