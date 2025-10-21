@@ -50,7 +50,7 @@ La **tabla de particiones** es la estructura que indica cómo está dividido un 
 - Tipo de [sistema de ficheros](99-glosario.md#sistema-de-archivos) (FAT32, NTFS, ext4, etc.)
 - Inicio y fin de la partición (sectores)
 - Si es arrancable (es decir, desde qué partición el sistema debe iniciar)
-- Información adicional según el esquema de particionamiento (MBR o GPT)
+- Información adicional según el esquema de particionamiento ([MBR](99-glosario.md#mbr-master-boot-record) o [GPT](99-glosario.md#gpt-guid-partition-table))
 
 !!! Nota
     La tabla de particiones normalmente se encuentra al principio del disco y permite al sistema operativo conocer
@@ -166,8 +166,9 @@ GPT
 
 ### 2.5 Partición EFI (ESP)
 
-La **partición EFI**, también conocida como **ESP** (*EFI System Partition*), es una pequeña área del disco donde 
-el firmware **UEFI** guarda los ficheros necesarios para iniciar el sistema operativo. Podemos imaginarla como una 
+La **partición EFI**, también conocida como [**ESP**](99-glosario.md#esp-efi-system-partition) (*EFI System Partition*), es una pequeña área del disco donde 
+el [firmware **UEFI**](99-glosario.md#firmware-uefi) (es decir, la implementación UEFI dispuesta en la placa base) guarda los ficheros necesarios para 
+iniciar el sistema operativo. Podemos imaginarla como una 
 **zona común de arranque**: un espacio que el firmware entiende y desde el cual puede leer directamente los archivos 
 ejecutables que inician los sistemas instalados.
 
@@ -248,7 +249,7 @@ Un **gestor de arranque** (bootloader) es un pequeño programa cuya única misi�
 y complejo (Windows, macOS, GNU/Linux, ...) en la memoria principal del ordenador (_RAM_) y cederle el control.
 
 En el contexto de **UEFI/GPT**, el gestor de arranque se materializa como un archivo ejecutable `.efi` que reside en la 
-**Partición EFI** (ESP). El **firmware UEFI** (es decir, la implementación UEFI dispuesta en la placa base) lo lanza 
+**Partición EFI** (ESP). El [**firmware UEFI**](99-glosario.md#firmware-uefi) lo lanza 
 directamente, y el gestor de arranque se encarga de:
 
 1. Leer archivos de **configuración y opciones de arranque**.
@@ -272,18 +273,18 @@ Boot Manager** empleado por Microsoft para sus sistemas Windows.
 ### 2.7 Registro de arranque UEFI: **NVRAM**
 
 Pero no basta con que la Partición EFI (ESP) contenga los archivos de arranque (`.efi`), 
-el **firmware UEFI** necesita saber qué archivos cargar 
+el [**firmware UEFI**](99-glosario.md#firmware-uefi) necesita saber qué archivos cargar 
 y en qué orden. Esta información se almacena en la **NVRAM** (_Non-Volatile Random-Access Memory_), que es una pequeña
 memoria no volátil, típicamente ubicada en la placa base, que guarda la configuración de UEFI y las entradas del gestor de arranque (la ubicación de cada
 fichero `.efi`).
 
-Así, la **NVRAM** contiene registros que, básicamente, son pares de identificador/valor que contienen el **nombre de 
+Así, la [**NVRAM**](99-glosario.md#nvram-non-volatile-random-access-memory) contiene registros que, básicamente, son pares de identificador/valor que contienen el **nombre de 
 una entrada** y la **ubicación del fichero `.efi`** correspondiente. Así, el _firmware UEFI_ puede generar un menú de
 arranque o dar a elegir al usuario, en cada caso, qué se va a iniciar.
 
 **Ejemplo**:
 
-| Nombre de entrada    |                                  |
+| Nombre de entrada    | Ubicación en la ESP              |
 |----------------------|----------------------------------|
 | Windows Boot Manager | \EFI\Microsoft\Boot\bootmgfw.efi |
 | Ubuntu               | \EFI\ubuntu\grubx64.efi          |

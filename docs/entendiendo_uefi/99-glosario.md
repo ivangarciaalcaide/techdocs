@@ -31,7 +31,7 @@ Ejemplo: En un PC moderno con UEFI, el firmware busca en la **partición EFI (ES
 
 ## BCD (Boot Configuration Data)
 El **BCD** es la base de datos de configuración de arranque de Windows, que sustituye al antiguo `boot.ini`.  
-Se guarda en la partición EFI y es gestionado por `Windows Boot Manager`.  
+Se guarda en la partición EFI (**ESP**) y es gestionado por `Windows Boot Manager`.  
 
 Herramientas:
 - `bcdboot`: genera los ficheros de arranque.  
@@ -78,7 +78,8 @@ la **partición EFI (UEFI)**.
 
 Es común que, al ser un código muy pequeño, el bootloader cargue un segundo bootloader más completo (como GRUB2) 
 al que se suele llamar [gestor de arranque](99-glosario.md#gestor-de-arranque) y
-que permita seleccionar entre varios sistemas operativos, entre otras cosas.
+que permita seleccionar entre varios sistemas operativos, entre otras cosas. Esta estructura de dos fases es típica
+en sistemas **BIOS/MBR**.
 
 Así, el gestor de arranque puede tener sus propios bootloaders para cada sistema operativo instalado que ya 
 cargan el kernel correspondiente.
@@ -188,6 +189,13 @@ D es un grupo de sectores o clúster (verde)
 
 ---
 
+## Firmware UEFI
+
+Es la implementación del estándar **UEFI** (Unified Extensible Firmware Interface) que está codificada y almacenada 
+**en un chip de memoria no volátil** (flash ROM) en la placa base del ordenador.
+
+---
+
 ## Formato / Formatear
 **Formatear** es preparar una unidad o partición para almacenar datos creando un **sistema de archivos**.  
 
@@ -271,8 +279,29 @@ Ejemplo visual de disco MBR:
 [ MBR | Partición 1 | Partición 2 | Partición 3 | Partición 4 ]
 ```
 
+!!! Nota
+    De los 512 bytes, el código de arranque ocupa 446 bytes y la tabla de particiones ocupa 64 bytes.
+
 ---
 
+## NVRAM (Non-Volatile Random-Access Memory)
+
+La NVRAM es una pequeña memoria no volátil, típicamente ubicada en la placa base, que guarda la configuración del
+firmware UEFI.
+
+Su función clave es **almacenar** las entradas de arranque: un **nombre de entrada** y la **ubicación del 
+fichero `.efi`** correspondiente.
+
+Estas entradas pueden ser gestionadas con distintas herramientas como **efibootmgr** (GNU/Linux) o **bcdedit** (Windows).
+
+Ejemplos de entradas almacenadas en **NVRAM**:
+
+| Nombre de entrada    | Ubicación en la ESP              |
+|----------------------|----------------------------------|
+| Windows Boot Manager | \EFI\Microsoft\Boot\bootmgfw.efi |
+| Ubuntu               | \EFI\ubuntu\grubx64.efi          |
+
+---
 ## Partición
 Una **partición** es una división lógica de un disco físico.  
 Permite tener distintos sistemas operativos o separar datos.  
