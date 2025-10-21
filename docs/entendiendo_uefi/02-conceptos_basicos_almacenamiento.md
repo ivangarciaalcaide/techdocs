@@ -33,9 +33,9 @@ Disco completo: /dev/sda
 De esta forma, el sistema operativo puede gestionar cada partición de forma independiente y se comportará como si cada
 una fuera un disco diferente.
 
-**GNU/Linux** y **macOs**:
+**GNU/Linux** y **macOS**:
 
-Lo típico es hacer referencia a las particiones como `/dev/sda1`, `/dev/sda2`, etc. donde `sda` es el disco y el 
+Lo típico es hacer referencia a las particiones como `/dev/sda1`, `/dev/sda2`, etc., donde `sda` es el disco y el 
 número indica la partición. Para los discos NVMe, se usa `nvme0n1p1`, `nvme0n1p2`, etc.
 
 **Windows**:
@@ -52,7 +52,7 @@ La **tabla de particiones** es la estructura que indica cómo está dividido un 
 - Si es arrancable (es decir, desde qué partición el sistema debe iniciar)
 - Información adicional según el esquema de particionamiento (MBR o GPT)
 
-!!! Nota 
+!!! Nota
     La tabla de particiones normalmente se encuentra al principio del disco y permite al sistema operativo conocer
     la ubicación y características de cada partición.
 
@@ -137,17 +137,17 @@ Resumiendo las ventajas de GPT frente a MBR:
 
 ```text
 GPT
-+------------------------+
-| Cabecera GPT           |
-+------------------------+
-| Partición 1 (GUID)     |
-| Partición 2 (GUID)     |
-| Partición 3 (GUID)     |
-| [...]                  |
-| Partición n (GUID)     |
-+------------------------+
-| Cabecera Backup GPT    |
-+------------------------+
++-------------------------+
+| Cabecera primaria GPT   |
++-------------------------+
+| Partición 1 (GUID)      |
+| Partición 2 (GUID)      |
+| Partición 3 (GUID)      |
+| [...]                   |
+| Partición n (GUID)      |
++-------------------------+
+| Cabecera Secundaria GPT |
++-------------------------+
 ```
 
 ---
@@ -212,7 +212,7 @@ La **estructura de directorios** dentro de la ESP suele seguir un estándar defi
 !!! Nota
     La carpeta `EFI/BOOT` es especial. Si el firmware no encuentra otra entrada de arranque válida, intenta arrancar automáticamente desde `EFI/BOOT/BOOTX64.EFI` (en sistemas de 64 bits).
 
-Así, un **diagrama típico** de las particiones de un disco preparado para arranque dual Windows / GNU Linux podría ser: 
+Así, un **diagrama típico** de las particiones de un disco preparado para arranque dual Windows y GNU/Linux podría ser: 
 
 ```text
 Disco /dev/sda (GPT)
