@@ -17,3 +17,10 @@
 .md-typeset .highlight .c { color: #2ecc71; font-weight: bold; }     /* Comentarios */
 .md-typeset .highlight .n { color: #3498db; }                        /* Nombres normales */
 .md-typeset .highlight .na { color: #27ae60; }    /* Name.Attribute = opciones */
+
+.md-typeset .admonition {
+    color: color-mix(in srgb, var(--md-default-fg-color) 80%, white 20%);
+    border-left-width: 3px;
+    border-color: var(--md-typeset-a-color);
+    font-size: 0.9em;
+}

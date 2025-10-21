@@ -14,7 +14,8 @@ independiente_. Para que pueda almacenar archivos y directorios, debe contener u
 **[sistema de archivos](99-glosario.md#sistema-de-archivos)** [formateado](99-glosario.md#formato-formatear). 
 Así, contendrá datos del usuario o un sistema operativo con todo lo necesario para que este pueda arrancar.
 
-> **Nota:** Los discos siempre deben tener al menos una partición para poder ser utilizados por un sistema operativo.
+!!! Nota    
+    Los discos siempre deben tener al menos una partición para poder ser utilizados por un sistema operativo.
 
 **Ejemplo de partición:**
 
@@ -34,7 +35,7 @@ una fuera un disco diferente.
 
 **GNU/Linux** y **macOs**:
 
-Lo típico es hacer referenica a las particiones como `/dev/sda1`, `/dev/sda2`, etc. donde `sda` es el disco y el 
+Lo típico es hacer referencia a las particiones como `/dev/sda1`, `/dev/sda2`, etc. donde `sda` es el disco y el 
 número indica la partición. Para los discos NVMe, se usa `nvme0n1p1`, `nvme0n1p2`, etc.
 
 **Windows**:
@@ -51,8 +52,9 @@ La **tabla de particiones** es la estructura que indica cómo está dividido un 
 - Si es arrancable (es decir, desde qué partición el sistema debe iniciar)
 - Información adicional según el esquema de particionamiento (MBR o GPT)
 
-> **Nota**: La tabla de particiones normalmente se encuentra al principio del disco y permite al sistema operativo conocer
-> la ubicación y características de cada partición.
+!!! Nota 
+    La tabla de particiones normalmente se encuentra al principio del disco y permite al sistema operativo conocer
+    la ubicación y características de cada partición.
 
 ---
 
@@ -74,7 +76,7 @@ pequeño (menos de 446 bytes) para dejar espacio a la tabla de particiones (64 b
 
 Tiene algunas limitaciones importantes:
 
-- Solo 4 particiones primarias (o 3 primarias + 1 extendida para hasta 7 en total)
+- Solo 4 particiones primarias (o 3 primarias + 1 extendida para hasta 7 en total, aunque puede depender del sistema operativo)
 - No puede gestionar discos > 2 TB
 - Solo permite una partición arrancable
 
@@ -114,14 +116,15 @@ particiones mediante copias de seguridad y sumas de verificación (CRC32).
 | LBA final-1                  | **Cabecera Secundaria de GPT** (Backup)                                    | Copia del GPT Header primario, permite recuperación en caso de corrupción                                                                                                                                                                    |
 | LBA final                    | No utilizado                                                               | El último sector físico del disco; no forma parte de la estructura GPT.                                                                                                                                                                                                                     |
 
-> NOTA: Típicamente, la Tabla de Particiones Primaria comienza en el LBA 2 y, por defecto, se extiende hasta el LBA 33, 
-> utilizando 32 sectores. Este tamaño estándar permite hasta 128 entradas de partición, ya que cada entrada requiere 
-> 128 bytes y cada sector (LBA) es comúnmente de 512 bytes (32 sectores×512 bytes/sector=16.384 bytes total, 
-> lo que equivale a 128 entradas×128 bytes/entrada).
->
-> Aunque este rango es el más común y el utilizado por sistemas como Windows, la especificación GPT permite 
-> flexibilidad. El número de entradas puede ser mayor o menor (ampliando o reduciendo el rango de LBAs),
-> un valor que se define explícitamente en la Cabecera GPT Primaria (LBA 1).
+!!!Nota
+    Típicamente, la Tabla de Particiones Primaria comienza en el LBA 2 y, por defecto, se extiende hasta el LBA 33, 
+    utilizando 32 sectores. Este tamaño estándar permite hasta 128 entradas de partición, ya que cada entrada requiere 
+    128 bytes y cada sector (LBA) es comúnmente de 512 bytes (32 sectores×512 bytes/sector=16.384 bytes total, 
+    lo que equivale a 128 entradas×128 bytes/entrada).
+
+    Aunque este rango es el más común y el utilizado por sistemas como Windows, la especificación GPT permite 
+    flexibilidad. El número de entradas puede ser mayor o menor (ampliando o reduciendo el rango de LBAs),
+    un valor que se define explícitamente en la Cabecera GPT Primaria (LBA 1).
 
 Resumiendo las ventajas de GPT frente a MBR:
 
@@ -159,29 +162,57 @@ GPT
 | Arranque            | Código de arranque MBR / BIOS (512 bytes)                    | Arranque directo EFI/GRUB  | 
 | Seguridad           | Baja                                                         | Copia cabecera + CRC32     |                     
 
-
----
-
-<span style="color: red; font-weight: bold;">
-SIN REVISAR A PARTIR DE AQUÍ
-</span>
-
----
-
 ---
 
 ### 2.5 Partición EFI (ESP)
 
-La **ESP (EFI System Partition)** es una partición especial obligatoria en sistemas UEFI:
+---
 
-- Contiene los ficheros EFI necesarios para arrancar sistemas operativos
-- Normalmente formateada en FAT32
-- Tamaño habitual: 100–512 MB
-- Propósito:
-    - Permitir que el firmware UEFI cargue directamente los ficheros .efi
-    - Servir como espacio común para gestores de arranque como GRUB2 o Windows Boot Manager
+La **partición EFI**, también conocida como **ESP** (*EFI System Partition*), es una pequeña área del disco donde 
+el firmware **UEFI** guarda los ficheros necesarios para iniciar el sistema operativo. Podemos imaginarla como una 
+**zona común de arranque**: un espacio que el firmware entiende y desde el cual puede leer directamente los archivos 
+ejecutables que inician los sistemas instalados.
 
-**Diagrama ejemplo ESP en disco GPT**:
+En los sistemas modernos, la ESP es **imprescindible**: sin ella, el equipo no sabría desde dónde arrancar.
+
+- **Tipo de partición:** `EFI System Partition`
+- **Identificador GPT:** `EF00` (en MBR se usa el tipo `0xEF`)
+- **Sistema de archivos:** FAT32 (por compatibilidad universal con todos los firmwares UEFI)
+- **Tamaño habitual:** entre **100 y 550 MB**
+- **Etiqueta recomendada:** `ESP` o `EFI System Partition`
+- **Punto de montaje habitual (Linux):** `/boot/efi`
+
+El propósito de esta partición es servir de **punto de encuentro** entre el firmware UEFI y los sistemas operativos instalados.
+
+El firmware UEFI puede **leer directamente** el sistema de archivos FAT32 de la ESP.  
+Dentro de ella busca los ficheros **`.efi`**, que son pequeños programas ejecutables que el propio firmware puede lanzar sin necesidad de ningún otro sistema.
+
+Estos ficheros pueden corresponder a:
+
+- El **gestor de arranque** (por ejemplo, `grubx64.efi`, `bootmgfw.efi`, `refind.efi`…)
+- Herramientas del fabricante (diagnóstico, actualización, etc.)
+- Otros sistemas operativos instalados (si hay arranque dual o múltiple)
+
+La **estructura de directorios** dentro de la ESP suele seguir un estándar definido por la especificación UEFI:
+
+```text
+/EFI
+├── BOOT
+│  └── BOOTX64.EFI ← Arranque genérico (fallback)
+├── Microsoft
+│  └── Boot
+│    ├── bootmgfw.efi ← Gestor de arranque de Windows
+│    └── BCD ← Base de datos de configuración del arranque
+├── ubuntu
+│  └── grubx64.efi ← Cargador de Linux (GRUB)
+└── tools
+└── shellx64.efi ← Consola UEFI opcional
+```
+
+!!! Nota
+    La carpeta `EFI/BOOT` es especial. Si el firmware no encuentra otra entrada de arranque válida, intenta arrancar automáticamente desde `EFI/BOOT/BOOTX64.EFI` (en sistemas de 64 bits).
+
+Así, un **diagrama típico** de las particiones de un disco preparado para arranque dual Windows / GNU Linux podría ser: 
 
 ```text
 Disco /dev/sda (GPT)
@@ -196,8 +227,20 @@ Disco /dev/sda (GPT)
 +---------------------------+
 ```
 
-> **Nota**: Nunca se debe borrar ni formatear la ESP sin conocer las implicaciones, ya que los sistemas operativos no 
-> arrancarán correctamente.
+!!! Nota
+    Nunca se debe borrar ni formatear la ESP sin conocer las implicaciones, ya que los sistemas operativos no
+    arrancarán correctamente.
+
+Y una **tabla de equivalencias** a modo de ilustración...
+
+| Sistema       | Ruta del gestor EFI                | Herramienta de gestión        |
+| ------------- | ---------------------------------- | ----------------------------- |
+| Windows       | `\EFI\Microsoft\Boot\bootmgfw.efi` | `bcdboot`, `bcdedit`          |
+| Ubuntu/Debian | `\EFI\ubuntu\grubx64.efi`          | `grub-install`, `efibootmgr`  |
+| Fedora        | `\EFI\fedora\shimx64.efi`          | `grub2-install`, `efibootmgr` |
+
+!!! Nota
+    Las herramientas de gestión se detallan más adelante.
 
 {%
     include-markdown "./.includes/footer.md"
