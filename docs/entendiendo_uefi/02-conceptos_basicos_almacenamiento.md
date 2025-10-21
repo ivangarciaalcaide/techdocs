@@ -68,7 +68,7 @@ disco.
 
 - El primer sector del disco (512 bytes) contiene:
     - El [bootloader](99-glosario.md#bootloader-cargador-de-arranque) (código de arranque)
-    - Tabla de particiones (máx. 4 entradas)
+    - Tabla de particiones (máx. 4 entradas de 16 bytes c/u)
 
 Así, al encender el ordenador, la BIOS lee este sector para localizar el bootloader. Este bootloader usa la información
 de la tabla de particiones para encontrar la partición activa y cargar el sistema operativo. El bootloader ha de ser
@@ -112,9 +112,9 @@ particiones mediante copias de seguridad y sumas de verificación (CRC32).
 | 1                            | **Cabecera Primaria de GPT**                                               | El punto de inicio real de GPT. Contiene firma "EFI PART", el GUID del disco, primer LBA de la tabla de particiones, primer LBA de la tabla de particiones secundaria, CRC32 de la tabla de particiones                                      |
 | 2 - 33                       | **Tabla de Particiones primaria**                                          | Cada entrada ocupa 128 bytes aprox. e incluye: GUID de tipo de partición, GUID único de partición, LBA inicial/final, atributos y nombre de la partición (hasta 36 caracteres)                                                               |
 | 34 ... LBA final-34          | **Particiones de Datos** (Particiones reales de ESP, Windows, Linux, etc.) | Espacio utilizable del disco donde se almacenan los sistemas operativos y los archivos. Cada partición apunta a un rango de LBAs con los datos del usuario.                                                                                  |
-| LBA final-33 - LBA final - 2 | **Tabla de Particiones secundaria** (Backup)                               | Copia de la tabla de particiones para redundancia (copia de seguridad con mismo contenido que LBA 2 a LBA N)                                                                                                                                 |
+| LBA final-33 - LBA final - 2 | **Tabla de Particiones secundaria** (Backup)                               | Copia de la tabla de particiones para redundancia (copia de seguridad con mismo contenido que **LBA 2 a LBA 33**)                                                                                                                            |
 | LBA final-1                  | **Cabecera Secundaria de GPT** (Backup)                                    | Copia del GPT Header primario, permite recuperación en caso de corrupción                                                                                                                                                                    |
-| LBA final                    | No utilizado                                                               | El último sector físico del disco; no forma parte de la estructura GPT.                                                                                                                                                                                                                     |
+| LBA final                    | No utilizado                                                               | El último sector físico del disco; no forma parte de la estructura GPT.                                                                                                                                                                      |
 
 !!!Nota
     Típicamente, la Tabla de Particiones Primaria comienza en el LBA 2 y, por defecto, se extiende hasta el LBA 33, 
@@ -166,8 +166,6 @@ GPT
 
 ### 2.5 Partición EFI (ESP)
 
----
-
 La **partición EFI**, también conocida como **ESP** (*EFI System Partition*), es una pequeña área del disco donde 
 el firmware **UEFI** guarda los ficheros necesarios para iniciar el sistema operativo. Podemos imaginarla como una 
 **zona común de arranque**: un espacio que el firmware entiende y desde el cual puede leer directamente los archivos 
@@ -176,7 +174,7 @@ ejecutables que inician los sistemas instalados.
 En los sistemas modernos, la ESP es **imprescindible**: sin ella, el equipo no sabría desde dónde arrancar.
 
 - **Tipo de partición:** `EFI System Partition`
-- **Identificador GPT:** `EF00` (en MBR se usa el tipo `0xEF`)
+- **Identificador GPT:** `GUID de tipo EFI Partition` (alias `EF00` - en MBR se usa el tipo `0xEF`-)
 - **Sistema de archivos:** FAT32 (por compatibilidad universal con todos los firmwares UEFI)
 - **Tamaño habitual:** entre **100 y 550 MB**
 - **Etiqueta recomendada:** `ESP` o `EFI System Partition`
@@ -241,6 +239,59 @@ Y una **tabla de equivalencias** a modo de ilustración...
 
 !!! Nota
     Las herramientas de gestión se detallan más adelante.
+
+---
+
+### 2.6 Definición de gestor de arranque (Bootloader)
+
+Un **gestor de arranque** (bootloader) es un pequeño programa cuya única misiónes cargar un sistema operativo más grande
+y complejo (Windows, macOS, GNU/Linux, ...) en la memoria principal del ordenador (_RAM_) y cederle el control.
+
+En el contexto de **UEFI/GPT**, el gestor de arranque se materializa como un archivo ejecutable `.efi` que reside en la 
+**Partición EFI** (ESP). El **firmware UEFI** (es decir, la implementación UEFI dispuesta en la placa base) lo lanza 
+directamente, y el gestor de arranque se encarga de:
+
+1. Leer archivos de **configuración y opciones de arranque**.
+2. **Presentar el menú** de selección de sistema operativo (si procede).
+3. **Cargar los archivos esenciales del kernel** en la memoria RAM antes de cederle el control.
+
+Los dos ejemplos más comunes son **GRUB** (usado por la mayor parte de distribuciones de GNU/Linux) y el **Windows
+Boot Manager** empleado por Microsoft para sus sistemas Windows.
+
+!!! Nota
+    A diferencia de **UEFI**, el sistema **BIOS** dependía del **Registro de Arranque Maestro** (MBR) que se ubicaba 
+    en el primer sector del disco (_LBA 0_ usando el direccionamiento lógico de bloques). Este sector solo reservaba **446 
+    bytes** para el código de arranque. Este espacio tan limitado solo podía contener un **cargador de primera fase**
+    (first-stage bootloader), que se limitaba a localizar y pasar el control a un gestor de arranque más completo (de
+    **segunda fase**), como pueda ser _GRUB_ o _Windows Boot Manager_, ubicado en otra parte del disco. **UEFI** elimina 
+    esta limitación de tamaño, permitiendo que el **gestor de arranque completo** (el fichero `.efi`) se ejecute directamente
+    en una sola fase.
+
+---
+
+### 2.7 Registro de arranque UEFI: **NVRAM**
+
+Pero no basta con que la Partición EFI (ESP) contenga los archivos de arranque (`.efi`), 
+el **firmware UEFI** necesita saber qué archivos cargar 
+y en qué orden. Esta información se almacena en la **NVRAM** (_Non-Volatile Random-Access Memory_), que es una pequeña
+memoria no volátil, típicamente ubicada en la placa base, que guarda la configuración de UEFI y las entradas del gestor de arranque (la ubicación de cada
+fichero `.efi`).
+
+Así, la **NVRAM** contiene registros que, básicamente, son pares de identificador/valor que contienen el **nombre de 
+una entrada** y la **ubicación del fichero `.efi`** correspondiente. Así, el _firmware UEFI_ puede generar un menú de
+arranque o dar a elegir al usuario, en cada caso, qué se va a iniciar.
+
+**Ejemplo**:
+
+| Nombre de entrada    |                                  |
+|----------------------|----------------------------------|
+| Windows Boot Manager | \EFI\Microsoft\Boot\bootmgfw.efi |
+| Ubuntu               | \EFI\ubuntu\grubx64.efi          |
+
+Se debe tener en cuenta que cuando un sistema operativo se instala o se repara, no solo se modifica el contenido de 
+la **ESP**, sino que también se actualiza la NVRAM para registrar la nueva ruta de arranque. 
+Herramientas como **efibootmgr** (en Linux) o **bcdedit** (en Windows) son las que se utilizan para manipular 
+directamente estas entradas de la **NVRAM**.
 
 {%
     include-markdown "./.includes/footer.md"
