@@ -5,7 +5,7 @@ site_url: https://techdocs.ivangarciaalcaide.es
 
 theme:
   name: material
- custom_dir: overrides/
+  custom_dir: overrides/
   language: es
   logo: assets/images/logo.png
   logo_width: 400
@@ -36,7 +36,7 @@ extra_css:
 
 plugins:
   - search
-  - macros:
+  - macros
   - include-markdown
   - exclude-search:
       exclude:
@@ -44,22 +44,22 @@ plugins:
         - assets/**
 
 markdown_extensions:
-     - codehilite:
-         guess_lang: false
-     - pymdownx.highlight:
-         anchor_linenums: true
-         use_pygments: true
-         linenums: true
-     - pymdownx.superfences
-     - attr_list
-     - admonition
-     - pymdownx.tasklist:
-         custom_checkbox: true
-         clickable_checkbox: true
-     - pymdownx.tilde
-     - toc:
-         permalink: true
-         toc_depth: 3
+   - codehilite:
+       guess_lang: false
+   - pymdownx.highlight:
+       anchor_linenums: true
+       use_pygments: true
+       linenums: true
+   - pymdownx.superfences
+   - attr_list
+   - admonition
+   - pymdownx.tasklist:
+       custom_checkbox: true
+       clickable_checkbox: true
+   - pymdownx.tilde
+   - toc:
+       permalink: true
+       toc_depth: 3
 
 nav:
   - "": index.md
