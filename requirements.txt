@@ -12,6 +12,7 @@ mkdocs-material>=9.6,<10.0
 mkdocs-awesome-pages-plugin>=2.7,<3.0
 
 # Plugins que usas
+pymdown-extensions>=10.0
 mkdocs-include-markdown-plugin>=6.0.0   # Inserta fragmentos .md con Jinja ({% include-markdown "path" %}).
 mkdocs-exclude>=1.0.0                   # Excluye ficheros/directorios del build (evita que aparezcan en nav y en site).
 mkdocs-exclude-search>=0.6.5            # Evita que ciertos ficheros sean indexados por el buscador.

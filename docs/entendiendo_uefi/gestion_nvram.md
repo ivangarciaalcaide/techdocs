@@ -66,6 +66,24 @@ flowchart TD
 ```
 </div>
 
+---
+
+### 3.1 Herramientas de gestión en sistemas modernos
+
+La mayoría de los **firmware UEFI** permiten gestionar de una manera limitada las entradas de la NVRAM desde el propio 
+[setup de la BIOS]("Término heredado: se refiere a la interfaz de configuración del firmware, que en realidad es UEFI."),
+por ejemplo, para cambiar el orden de arranque o deshabilitar alguna entrada. Pero los sistemas 
+operativos modernos tienen herramientas en línea de comandos que permiten un control mucho más exhaustivo, preciso y
+flexible sobre las rutas y nombres de entradas, lo cual es esencial para una configuración precisa y un diagnóstico
+efectivo.
+
+Las dos herramientas que abordaremos en detalle son:
+
+1. **`bcdedit`** (en Windows): Herramienta originalmente concebida para la configuración de arranque de los sistemas 
+Windows que hubiera en una máquina, pero extendida para gestionar la NVRAM.
+2. **`efibootmgr`** (en GNU/Linux): simple y potente herramienta de código abierto que permite la interacción con las
+entradas almacenadas en la NVRAM.
+
 {%
     include-markdown "./.includes/footer.md"
 %}
