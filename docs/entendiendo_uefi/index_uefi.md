@@ -6,7 +6,7 @@ máquinas.
 
 ## Índice
 - [01 - Introducción](01-introduccion.md)
-- [02 - Conceptos básicos de almacenamiento](02-conceptos_basicos_almacenamiento.md)
+- [02 - Conceptos básicos](02-conceptos_basicos.md)
 - [Glosario](99-glosario.md)
 
 <!--
