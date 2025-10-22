@@ -5,7 +5,7 @@ site_url: https://techdocs.ivangarciaalcaide.es
 
 theme:
   name: material
-  custom_dir: overrides
+ custom_dir: overrides/
   language: es
   logo: assets/images/logo.png
   logo_width: 400
@@ -36,6 +36,7 @@ extra_css:
 
 plugins:
   - search
+  - macros:
   - include-markdown
   - exclude-search:
       exclude:
@@ -66,6 +67,7 @@ nav:
       - Configuración Apache2 para Adminer: configuracion_apache_para_adminer.md
   - Manuales:
       - Entendiendo UEFI:
+        - Índice: entendiendo_uefi/index_uefi.md
         - Introducción: entendiendo_uefi/01-introduccion.md
-        - Conceptos básicos de almacenamiento: entendiendo_uefi/02-conceptos_basicos_almacenamiento.md
+        - Conceptos básicos: entendiendo_uefi/02-conceptos_basicos.md
         - Glosario: entendiendo_uefi/99-glosario.md
