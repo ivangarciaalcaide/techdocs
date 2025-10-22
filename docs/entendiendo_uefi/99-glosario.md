@@ -1,10 +1,8 @@
-# Glosario
-
+---
+title: "Entendiendo UEFI: Glosario"
 ---
 
-<span style="color: red; font-weight: bold;">
-SIN REVISAR 
-</span>
+# Glosario
 
 ---
 

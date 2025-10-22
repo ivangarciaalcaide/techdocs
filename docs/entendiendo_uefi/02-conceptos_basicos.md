@@ -1,8 +1,12 @@
+---
+title: "Entendiendo UEFI: Conceptos básicos"
+---
+
 # Entendiendo UEFI
 
 ---
 
-## 2. Conceptos básicos de almacenamiento
+## 2. Conceptos básicos
 
 ### 2.1 Qué es una partición
 
@@ -232,11 +236,11 @@ Disco /dev/sda (GPT)
 
 Y una **tabla de equivalencias** a modo de ilustración...
 
-| Sistema       | Ruta del gestor EFI                | Herramienta de gestión        |
-| ------------- | ---------------------------------- | ----------------------------- |
-| Windows       | `\EFI\Microsoft\Boot\bootmgfw.efi` | `bcdboot`, `bcdedit`          |
-| Ubuntu/Debian | `\EFI\ubuntu\grubx64.efi`          | `grub-install`, `efibootmgr`  |
-| Fedora        | `\EFI\fedora\shimx64.efi`          | `grub2-install`, `efibootmgr` |
+| Sistema        | Ruta del gestor EFI                | Herramienta de gestión        |
+|:---------------|:-----------------------------------|:------------------------------|
+| Windows        | `\EFI\Microsoft\Boot\bootmgfw.efi` | `bcdboot`, `bcdedit`          |
+| Ubuntu/Debian  | `\EFI\ubuntu\grubx64.efi`          | `grub-install`, `efibootmgr`  |
+| Fedora         | `\EFI\fedora\shimx64.efi`          | `grub2-install`, `efibootmgr` |
 
 !!! note "Nota"
     Las herramientas de gestión se detallan más adelante.

@@ -1,3 +1,7 @@
+---
+title: "Entendiendo UEFI: Introducción"
+---
+
 # Entendiendo UEFI
 
 ---
@@ -51,7 +55,7 @@ Intel.
 
 ### 1.3 Ventajas clave de UEFI frente a BIOS
 
-**UEFI** aporta ventajas frente a BIOS que son críticas para los sistemas modernos. A continuación se exponen
+**UEFI** aporta ventajas frente a **BIOS** que son críticas para los sistemas modernos. A continuación se exponen
 las más destacadas:
 
 - **Arranque más rápido**: UEFI permite la inicialización paralela de dispositivos, lo que puede reducir considerablemente los tiempos de inicio de un sistema.
