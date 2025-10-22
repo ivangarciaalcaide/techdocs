@@ -15,8 +15,16 @@ theme:
 
   features:
     - content.code.annotate
+    - content.code.clipboard
     - content.code.copy
+    - content.code.highlight
+    - content.footnotes
+    - content.icons
+    - content.tables
     - content.tabs.link
+    - mermaid
+    - navigation.instant
+    - navigation.tabs
 
   palette:
     primary: 'blue'
@@ -44,15 +52,20 @@ plugins:
         - assets/**
 
 markdown_extensions:
+   - admonition
+   - attr_list
    - codehilite:
        guess_lang: false
+   - pymdownx.details
    - pymdownx.highlight:
        anchor_linenums: true
        use_pygments: true
        linenums: true
-   - pymdownx.superfences
-   - attr_list
-   - admonition
+   - pymdownx.superfences:
+       custom_fences:
+         - name: mermaid
+           class: mermaid
+           format: !!python/name:pymdownx.superfences.fence_code_format
    - pymdownx.tasklist:
        custom_checkbox: true
        clickable_checkbox: true
@@ -70,4 +83,5 @@ nav:
         - Índice: entendiendo_uefi/index_uefi.md
         - Introducción: entendiendo_uefi/01-introduccion.md
         - Conceptos básicos: entendiendo_uefi/02-conceptos_basicos.md
+        - Gestión del registro de arranque UEFI (NVRAM): entendiendo_uefi/gestion_nvram.md
         - Glosario: entendiendo_uefi/99-glosario.md
