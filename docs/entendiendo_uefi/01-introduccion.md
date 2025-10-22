@@ -22,7 +22,7 @@ encontraba en las placas base y que contenía, entre otras cosas, las instruccio
 1. Localizar un sistema operativo en alguno de los discos disponibles.
 2. Cargarlo en memoria para que la **CPU** pueda ejecutarlo.
 
-!!! Nota
+!!! note "Nota"
     La **BIOS** es _no volátil_, para que sus datos no se pierdan al apagar el ordenador.
 
 **BIOS**, según han ido avanzando los componentes de los
@@ -44,7 +44,7 @@ Microsoft, además de Intel) formaron una alianza para crear la fundación
 **UEFI** con el objetivo de desarrollar **EFI**, el trabajo iniciado por
 Intel.
 
-!!! Nota 
+!!! note "Nota" 
     **UEFI** es solo una **especificación**. Cada fabricante desarrolla su propia implementación.
     Esto explica por qué el "_menú de configuración UEFI_" se ve diferente en placas base de distintas marcas.
     La referencia más conocida es [EDK2](https://github.com/tianocore/edk2), escrita en C.

@@ -14,7 +14,7 @@ independiente_. Para que pueda almacenar archivos y directorios, debe contener u
 **[sistema de archivos](99-glosario.md#sistema-de-archivos)** [formateado](99-glosario.md#formato-formatear). 
 Así, contendrá datos del usuario o un sistema operativo con todo lo necesario para que este pueda arrancar.
 
-!!! Nota    
+!!! note "Nota"    
     Los discos siempre deben tener al menos una partición para poder ser utilizados por un sistema operativo.
 
 **Ejemplo de partición:**
@@ -52,7 +52,7 @@ La **tabla de particiones** es la estructura que indica cómo está dividido un 
 - Si es arrancable (es decir, desde qué partición el sistema debe iniciar)
 - Información adicional según el esquema de particionamiento ([MBR](99-glosario.md#mbr-master-boot-record) o [GPT](99-glosario.md#gpt-guid-partition-table))
 
-!!! Nota
+!!! note "Nota"
     La tabla de particiones normalmente se encuentra al principio del disco y permite al sistema operativo conocer
     la ubicación y características de cada partición.
 
@@ -208,7 +208,7 @@ La **estructura de directorios** dentro de la ESP suele seguir un estándar defi
 └── shellx64.efi ← Consola UEFI opcional
 ```
 
-!!! Nota
+!!! note "Nota"
     La carpeta `EFI/BOOT` es especial. Si el firmware no encuentra otra entrada de arranque válida, intenta arrancar automáticamente desde `EFI/BOOT/BOOTX64.EFI` (en sistemas de 64 bits).
 
 Así, un **diagrama típico** de las particiones de un disco preparado para arranque dual Windows y GNU/Linux podría ser: 
@@ -226,7 +226,7 @@ Disco /dev/sda (GPT)
 +---------------------------+
 ```
 
-!!! Nota
+!!! note "Nota"
     Nunca se debe borrar ni formatear la ESP sin conocer las implicaciones, ya que los sistemas operativos no
     arrancarán correctamente.
 
@@ -238,7 +238,7 @@ Y una **tabla de equivalencias** a modo de ilustración...
 | Ubuntu/Debian | `\EFI\ubuntu\grubx64.efi`          | `grub-install`, `efibootmgr`  |
 | Fedora        | `\EFI\fedora\shimx64.efi`          | `grub2-install`, `efibootmgr` |
 
-!!! Nota
+!!! note "Nota"
     Las herramientas de gestión se detallan más adelante.
 
 ---
@@ -259,7 +259,7 @@ directamente, y el gestor de arranque se encarga de:
 Los dos ejemplos más comunes son **GRUB** (usado por la mayor parte de distribuciones de GNU/Linux) y el **Windows
 Boot Manager** empleado por Microsoft para sus sistemas Windows.
 
-!!! Nota
+!!! note "Nota"
     A diferencia de **UEFI**, el sistema **BIOS** dependía del **Registro de Arranque Maestro** (MBR) que se ubicaba 
     en el primer sector del disco (_LBA 0_ usando el direccionamiento lógico de bloques). Este sector solo reservaba **446 
     bytes** para el código de arranque. Este espacio tan limitado solo podía contener un **cargador de primera fase**
