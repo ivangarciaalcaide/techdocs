@@ -61,7 +61,7 @@ La **tabla de particiones** es la estructura que indica cómo está dividido un 
 ### 2.3 Tipos de tablas de particiones: MBR, GPT
 
 **MBR (Master Boot Record)**
-Es el esquema de particiones más antiguo, que se utilizaba en [BIOS](99-glosario.md#bios) heredado del IBM PC original.
+Es el esquema de particiones más antiguo, que se utilizaba en [BIOS](99-glosario.md#bios) heredado del diseño original del IBM PC.
 La tabla de particiones MBR (Registro de Arranque Maestro) es un esquema de particionamiento que se encuentra en el 
 primer sector de un disco y que contiene el código para iniciar el sistema operativo y el mapa de las particiones del 
 disco.
@@ -245,7 +245,7 @@ Y una **tabla de equivalencias** a modo de ilustración...
 
 ### 2.6 Definición de gestor de arranque (Bootloader)
 
-Un **gestor de arranque** (bootloader) es un pequeño programa cuya única misiónes cargar un sistema operativo más grande
+Un **gestor de arranque** (bootloader) es un pequeño programa cuya única misión es cargar un sistema operativo más grande
 y complejo (Windows, macOS, GNU/Linux, ...) en la memoria principal del ordenador (_RAM_) y cederle el control.
 
 En el contexto de **UEFI/GPT**, el gestor de arranque se materializa como un archivo ejecutable `.efi` que reside en la 
