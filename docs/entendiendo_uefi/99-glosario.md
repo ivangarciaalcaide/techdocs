@@ -234,9 +234,10 @@ UEFI → grubx64.efi → menú de GRUB → elegir Ubuntu → cargar kernel Linux
 Tabla de particiones moderna, usada con UEFI.  
 
 Características:
-- Identifica particiones con GUID (identificadores únicos).  
-- Soporta discos de hasta 9.4 ZB.  
-- Hasta 128 particiones en Windows (sin necesidad de particiones extendidas).  
+
+- Identifica particiones con **GUID** (identificadores únicos).  
+- Soporta discos de hasta **9.4 ZB**.  
+- Hasta **128 particiones** en Windows (sin necesidad de particiones extendidas).  
 
 Ejemplo visual de disco GPT (3 particiones):
 ```
