@@ -84,6 +84,15 @@ Windows que hubiera en una máquina, pero extendida para gestionar la NVRAM.
 2. **`efibootmgr`** (en GNU/Linux): simple y potente herramienta de código abierto que permite la interacción con las
 entradas almacenadas en la NVRAM.
 
+---
+
+#### 3.1.1 `bcdedit` en Windows
+
+`bcdedit` es una herramienta de línea de comandos incluida en Windows que permite gestionar el 
+[**BCD**](99-glosario.md#bcd-boot-configuration-data) (_Boot Configuration Data_), que es la base de datos que almacena
+la configuración de arranque del sistema operativo Windows y las entradas de la NVRAM.
+
+
 {%
     include-markdown "./.includes/footer.md"
 %}

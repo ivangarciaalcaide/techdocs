@@ -7,6 +7,7 @@ máquinas.
 ## Índice
 - [01 - Introducción](01-introduccion.md)
 - [02 - Conceptos básicos](02-conceptos_basicos.md)
+- [03 - Gestión del Registro de Arranque UEFI (NVRAM)](03-gestion_nvram.md)
 - [Glosario](99-glosario.md)
 
 ---
