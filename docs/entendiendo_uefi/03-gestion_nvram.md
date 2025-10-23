@@ -92,6 +92,153 @@ entradas almacenadas en la NVRAM.
 [**BCD**](99-glosario.md#bcd-boot-configuration-data) (_Boot Configuration Data_), que es la base de datos que almacena
 la configuración de arranque del sistema operativo Windows y las entradas de la NVRAM.
 
+Debe ejecutarse con **privilegios de administrador** desde una ventana de _PowerShell_ o _Símbolo del sistema_.
+
+Su forma de uso general es:
+
+```powershell
+bcdedit /command [options]
+```
+
+Donde `/command` es la acción que se desea realizar (como `/enum`, `/set`, `/delete`, etc.) y `[options]` son los
+parámetros específicos para esa acción. (En la sección 3.2 se detallan algunas de estas operaciones).
+
+---
+
+#### 3.1.2 `efibootmgr` en GNU/Linux
+
+`efibootmgr` es una herramienta de línea de comandos que permite gestionar las entradas de arranque
+almacenadas directamente en la **NVRAM** del **firmware UEFI**. Es la utilidad nativa y estándar para este fin en la 
+mayoría de las distribuciones **GNU/Linux**.
+
+Debe ejecutarse con **privilegios de superusuario** (usando `sudo` o como `root`) desde una terminal.
+
+Su forma de uso general es:
+
+```bash
+efibootmgr [options]
+```
+
+A diferencia de `bcdedit` (que trabaja sobre el BCD), `efibootmgr` interactúa de forma directa y minimalista con la
+capa de *firmware* para consultar y manipular los registros de arranque.
+
+---
+
+### 3.2 Operaciones fundamentales en la NVRAM
+
+A continuación, se describen algunas de las operaciones más comunes que se pueden realizar con `bcdedit` y `efibootmgr`.
+
+#### 3.2.1 Visualizar las entradas de arranque existentes
+
+Se trata de mostrar las **entradas de arranque almacenadas**, incluyendo las _rutas a los cargadores de
+arranque_ y _sus identificadores únicos_ [(**GUID**)](99-glosario.md#gpt-guid-partition-table).
+
+- **Con `bcdedit` (Windows):**
+
+De manera generíca se ejecuta:
+
+```powershell
+bcdedit /enum [<type>] [/v]
+```
+Por ejemplo, para listar las entradas de arranque de la NVRAM, se usaría:
+
+```powershell
+bcdedit /enum firmware
+```
+
+??? note "Explicación de los parámetros"
+    Con `/enum` se listan las entradas de arranque tanto las internas de Window (BCD) como las externas (NVRAM).
+    
+    `<type>` filtra el tipo de entradas a mostrar. Algunas de las opciones disponibles son:
+    
+    - `all`: Muestra todas las entradas (por defecto).
+      - `firmware`: Muestra las entradas de arranque UEFI almacenadas en la NVRAM.
+      - `osloader`: Muestra las entradas relacionadas con los cargadores de arranque del sistema operativo.
+      - `bootmgr`: Muestra la configuración del gestor de arranque de Windows.
+    
+    Y la opción `/v` (verbose) proporciona información detallada sobre cada entrada.
+
+??? note "Ejemplo de salida de `bcdedit /enum firmware`"
+    ```text
+    Administrador de arranque de firmware
+    -----------------------------------
+    Identificador           {fwbootmgr}
+    displayorder            {5f6fbbbe-9a03-11f0-9b9e-806e6f6e6963}      <-- GUIDs de las entradas
+                            {b0a48ba0-8ef4-11f0-9b9b-806e6f6e6963}          Están en el orden de 
+                            {5f6fbbbd-9a03-11f0-9b9e-806e6f6e6963}          arranque.
+                            {fe56e23a-9a20-11f0-9bb2-806e6f6e6963}
+                            {bootmgr}
+                            {4bce5028-9a17-11f0-9bae-806e6f6e6963}
+                            {b0a48ba1-8ef4-11f0-9b9b-806e6f6e6963}
+    timeout                 1
+    
+    Administrador de arranque de Windows
+    ----------------------------------
+    Identificador           {bootmgr}
+    device                  partition=S:
+    path                    \EFI\MICROSOFT\BOOT\BOOTMGFW.EFI
+    description             Windows Boot Manager
+    locale                  en-us
+    inherit                 {globalsettings}
+    default                 {current}
+    resumeobject            {d8ab5b8f-9a0c-11f0-9ba5-049226d1be46}
+    displayorder            {current}
+    toolsdisplayorder       {memdiag}
+    timeout                 0
+    
+    Aplicación de firmware (101fffff)
+    ---------------------------------
+    Identificador           {4bce5028-9a17-11f0-9bae-806e6f6e6963}      <-- GUID de las entrada
+    device                  partition=S:                                <-- Partición ESP
+    path                    \EFI\Part-01-02\Boot\bootmgfw.efi           <-- Ruta al .efi
+    description             Part-01-02                                  <-- Descripción de la
+                                                                            entrada como se
+    Aplicación de firmware (101fffff)                                       mostraría en el
+    ---------------------------------                                       menú de arranque.
+    Identificador           {5f6fbbbd-9a03-11f0-9b9e-806e6f6e6963}
+    description             UEFI: PXE IP6 Realtek PCIe GBE Family Controller 
+
+    Aplicación de firmware (101fffff)
+    ---------------------------------
+    Identificador           {5f6fbbbe-9a03-11f0-9b9e-806e6f6e6963}
+    device                  partition=S:
+    path                    \EFI\DEBIAN\GRUBX64.EFI
+    description             debian
+    
+    Aplicación de firmware (101fffff)
+    ---------------------------------
+    Identificador           {b0a48ba0-8ef4-11f0-9b9b-806e6f6e6963}
+    description             UEFI: PXE IP4 Realtek PCIe GBE Family Controller
+    
+    Aplicación de firmware (101fffff)
+    ---------------------------------
+    Identificador           {b0a48ba1-8ef4-11f0-9b9b-806e6f6e6963}
+    description             UEFI: PXE IP6 Realtek PCIe GBE Family Controller
+    
+    Aplicación de firmware (101fffff)
+    ---------------------------------
+    Identificador           {fe56e23a-9a20-11f0-9bb2-806e6f6e6963}
+    description             Hard Drive
+    ```
+
+- **Con `efibootmgr` (GNU/Linux):**
+
+  ```bash
+  efibootmgr
+  ```
+Este comando muestra una lista de las entradas de arranque almacenadas en la NVRAM, junto con sus identificadores 
+y el orden de arranque. No requiere parámetros adicionales para una visualización básica.
+
+??? note "Ejemplo de salida de `efibootmgr`"
+    ```text
+    BootCurrent: 0003
+    Timeout: 1 seconds
+    BootOrder: 0003,0000
+    Boot0000* Windows Boot Manager  HD(2,GPT,c4c56de3-50ca-4443-949e-06ce7f1cdbdc,0xfa000,0x32000)
+                                    /File(\EFI\Microsoft\Boot\bootmgfw.efi)57000 [...] 00000400
+    Boot0003* ubuntu        HD(2,GPT,c4c56de3-50ca-4443-949e-06ce7f1cdbdc,0xfa000,0x32000)
+                            /File(\EFI\ubuntu\shimx64.efi)
+    ```
 
 {%
     include-markdown "./.includes/footer.md"
