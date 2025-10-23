@@ -72,7 +72,7 @@ flowchart TD
 
 La mayoría de los **firmware UEFI** permiten gestionar de una manera limitada las entradas de la NVRAM desde el propio 
 [setup de la BIOS]("Término heredado: se refiere a la interfaz de configuración del firmware, que en realidad es UEFI."),
-por ejemplo, para cambiar el orden de arranque o deshabilitar alguna entrada. Pero los sistemas 
+por ejemplo, para cambiar el orden de arranque o deshabilitar alguna entrada, y los sistemas 
 operativos modernos tienen herramientas en línea de comandos que permiten un control mucho más exhaustivo, preciso y
 flexible sobre las rutas y nombres de entradas, lo cual es esencial para una configuración precisa y un diagnóstico
 efectivo.
@@ -128,6 +128,21 @@ capa de *firmware* para consultar y manipular los registros de arranque.
 
 A continuación, se describen algunas de las operaciones más comunes que se pueden realizar con `bcdedit` y `efibootmgr`.
 
+??? note "Diferencias clave entre Powershell y CMD para entender los ejemplos"
+    Cuando se ejecuta un comando en Windows es importante tener claro que **PowerShell** y el **Símbolo del sistema 
+    (CMD)** tienen diferente manera de interpretar los comandos y sus parámetros. 
+
+    **{++CMD++}**: Espera el nombre del comando seguido de una cadena con los parámetros que le hagan falta. Así, **CMD** 
+    pasa esta cadena tal cual al programa que se ejecuta y este se encarga de parsearla.
+
+    **{++Powershell++}**: Interpreta los argumentos de manera independiente y se los va pasando al programa, por ejemplo, 
+    los corchetes `[]` y llaves `{}` tienen un significado especial y deben escaparse si se quieren
+    usar literalmente.
+
+    La sintaxis que se emplea en este documento está adaptada para **Powershell** de manera que **se añaden comillas 
+    dobles** `"` alrededor de los parámetros que contienen caracteres especiales. Estas comillas no son necesarias en
+    **CMD**.
+
 #### 3.2.1 Visualizar las entradas de arranque existentes
 
 Se trata de mostrar las **entradas de arranque almacenadas**, incluyendo las _rutas a los cargadores de
@@ -135,7 +150,7 @@ arranque_ y _sus identificadores únicos_ [(**GUID**)](99-glosario.md#gpt-guid-p
 
 - **Con `bcdedit` (Windows):**
 
-De manera generíca se ejecuta:
+De manera genérica se ejecuta:
 
 ```powershell
 bcdedit /enum [<type>] [/v]
@@ -239,6 +254,86 @@ y el orden de arranque. No requiere parámetros adicionales para una visualizaci
     Boot0003* ubuntu        HD(2,GPT,c4c56de3-50ca-4443-949e-06ce7f1cdbdc,0xfa000,0x32000)
                             /File(\EFI\ubuntu\shimx64.efi)
     ```
+---
+
+#### 3.2.2. Modificar el orden de arranque
+
+Cambiar el orden de arranque permite especificar al **firmware UEFI** qué cargador de arranque debe intentar
+iniciar primero. Esta operación requiere el **GUID** en el caso de `bcdedit` o el **número de entrada** en el caso de
+`efibootmgr`.
+
+- **Con `bcdedit` (Windows):**
+
+`bcdedit` tiene dos maneras de modificar el orden de arranque:
+
+1. Sobreescribir la lista completa de entradas en el **Firmware Boot Manager ({fwbootmgr})**:
+
+  ```powershell
+  bcdedit /set "{fwbootmgr}" displayorder "{GUID1}" "{GUID2}" ...
+  ```
+
+2. Manipular una entrada específica para cambiar su posición en el orden de arranque (ponerla al principio o al final):
+
+  ```powershell
+  bcdedit /displayorder "{GUID}" /addfirst
+  bcdedit /displayorder "{GUID}" /addlast
+  ```
+
+- **Con `efibootmgr` (GNU/Linux):**
+
+Con `efibootmgr`, se utiliza la opción `-o` para especificar la nueva secuencia de **Boot IDs** 
+(los números hexadecimales de 4 dígitos, ej., _0003_).
+
+```bash
+sudo efibootmgr -o <BootOrder>
+```
+
+Donde `<BootOrder>` es una **lista separada por comas** de los números de las entradas en el orden deseado.
+
+```bash
+sudo efibootmgr -o 0003,0000
+```
+
+??? warning "Precaución al modificar el orden de arranque con `efibootmgr`"
+    Este comando **sobreescribe completamente el orden de arranque**. Asegúrese de incluir todas las entradas que desea 
+    mantener, ya que las que no se incluyan serán eliminadas del orden de arranque.
+
+---
+
+#### 3.2.3. Crear una nueva entrada de arranque
+
+Cuando se instala un nuevo sistema operativo, gestor de arranque, o herraentamienta de arranque, generará su propia 
+entrada en la [**ESP**](99-glosario.md#esp-efi-system-partition) y registrará una nueva entrada en la
+[**NVRAM**](99-glosario.md#nvram-non-volatile-random-access-memory). Sin embargo, en algunos casos puede ser necesario 
+crear manualmente una entrada de arranque (aunque improbable).
+
+Basicamente, se trata de especificar la **ruta al archivo `.efi`** dentro de la ESP y asignarle un 
+**nombre descriptivo**.
+
+- **Con `bcdedit` (Windows):**
+
+??? warning "La partición ESP debe estar montada previamente"
+    Lo primero es tener en cuenta que la partición ESP debe estar montada y accesible desde Windows, asignándole una 
+    letra de unidad si es necesario. Se puede usar **diskpart**, **mountvol** o la herramienta que sea. Una propuesta
+    para asignarle la letra `S:`:
+    ```powershell
+        Get-Partition | Where-Object {$_.GptType -eq '{C12A7328-F81F-11D2-BA4B-00A0C93EC93B}'} | Set-Partition -NewDriveLetter S
+    ```
+    ???+ note "Sobre el GUID de la ESP"
+        El GUID `{C12A7328-F81F-11D2-BA4B-00A0C93EC93B}` es el identificador estándar para la partición ESP en discos GPT.
+
+  ```powershell
+  bcdedit /create /d "<Description>" /application firmware
+  ```
+
+  Esto crea una nueva entrada de arranque en la **NVRAM** y devuelve un **GUID** único para esa entrada.
+
+  Luego, se debe configurar la ruta al archivo `.efi`:
+
+  ```powershell
+  bcdedit /set "{GUID}" device partition=<DriveLetter>:
+  bcdedit /set "{GUID}" path "\EFI\<PathToEFIFile>.efi"
+  ```
 
 {%
     include-markdown "./.includes/footer.md"
