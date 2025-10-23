@@ -82,5 +82,5 @@ nav:
         - Índice: entendiendo_uefi/index_uefi.md
         - Introducción: entendiendo_uefi/01-introduccion.md
         - Conceptos básicos: entendiendo_uefi/02-conceptos_basicos.md
-        - Gestión del registro de arranque UEFI (NVRAM): entendiendo_uefi/gestion_nvram.md
+        - Gestión del registro de arranque UEFI (NVRAM): entendiendo_uefi/03-gestion_nvram.md
         - Glosario: entendiendo_uefi/99-glosario.md
