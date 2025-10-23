@@ -22,7 +22,6 @@ theme:
     - content.icons
     - content.tables
     - content.tabs.link
-    - mermaid
     - navigation.instant
     - navigation.tabs
 
