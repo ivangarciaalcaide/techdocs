@@ -90,9 +90,69 @@ entradas almacenadas en la NVRAM.
 
 `bcdedit` es una herramienta de línea de comandos incluida en Windows que permite gestionar el 
 [**BCD**](99-glosario.md#bcd-boot-configuration-data) (_Boot Configuration Data_), que es la base de datos que almacena
-la configuración de arranque del sistema operativo Windows y las entradas de la NVRAM.
+la configuración de arranque del sistema operativo Windows, así como las entradas registradas en la **NVRAM**.
 
-Debe ejecutarse con **privilegios de administrador** desde una ventana de _PowerShell_ o _Símbolo del sistema_.
+Ya que `bcdedit` trabaja sobre el **BCD** y sobre la **NVRAM**, conviene aclarar la diferencia entre ambas capas:
+
+- **BCD** es una _base de datos_ (normalmente el archivo `\EFI\Microsoft\Boot\BCD`) que contienen la configuración 
+de arranque específica de Windows. Incluye información sobre los sistemas operativos instalados, herramientas que
+necesitan de arranque, así como sus opciones de 
+arranque y otros parámetros relacionados con el proceso de inicio. Es decir, una vez el `.efi` de Windows es cargado por 
+el firmware, este `.efi` lee el BCD para saber qué hacer a continuación y el BCD puede dar múltiples opciones de arranque 
+(por ejemplo, diferentes versiones de Windows u otros sistemas operativos).
+
+Por simplificar, podría decirse que la **BCD** es una capa lógica gestionada por Windows que hace lo mismo (muy 
+parecido) a lo que hace la **NVRAM**.
+
+Así, Windows utiliza `bcdedit` para sincronizar y mantener ambas capas:
+
+ - Las modificaciones en el **BCD** se pueden reflejar en las entradas de la **NVRAM**.
+ - El contenido de la NVRAM puede contener entradas diferentes a las del **BCD**.
+
+<div style="text-align: center">
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '14px', 'fontFamily': 'Inter'}}}%%
+graph TD
+    %% Nodo NVRAM
+    NVRAM["<b>NVRAM</b> (Entradas UEFI)<hr><div style='text-align: left; padding-left: 10px; line-height: 1.6; width:225px'><b>Boot0000</b>: Windows Boot Manager<br><b>Boot0001</b>: MemTest<br><b>Boot0002</b>: Linux / Otra entrada</div>"]
+
+    %% Nodo Boot Manager
+    BOOT["""<div style='width:240px; text-align:center; line-height:1.2; margin:0; padding:2px;'><b>Windows Boot Manager (.efi)</b><hr style='margin:4px'>Lee BCD y presenta opciones de arranque</div>"""]
+
+    %% Opciones del BCD como nodos paralelos
+    OPCION1["Winload.efi<br>(Windows)"]
+    OPCION2["memtest.exe<br>(MemTest)"]
+    OPCION3["grubx64.efi / Otra EFI<br>(Linux u otra herramienta)"]
+
+    %% Convergencia final
+    OS["<b>Sistema operativo / utilidad</b><hr>Windows, Linux o MemTest"]
+
+    %% Conexiones con texto
+    NVRAM -->|Arranca <b>BOOT0000</b>| BOOT
+    BOOT -->|Entrada <b>BCD 1</b>| OPCION1
+    BOOT -->|Entrada <b>BCD 2</b>| OPCION2
+    BOOT -->|Entrada <b>BCD 3</b>| OPCION3
+
+    OPCION1 -->|Arranca|OS
+    OPCION2 -->|Arranca|OS
+    OPCION3 -->|Arranca|OS
+
+    %% Estilo minimalista y monocromo
+    classDef default fill:#eeeeee,stroke:#333,stroke-width:1px; font-size: 10px
+
+```
+
+</div>
+
+??? failure "Windows Boot Manager **NO** arranca cualquier `.efi`"
+    A diferencia de **firmware UEFI**, el **Windows Boot Manager** no está diseñado para arrancar cualquier
+    archivo `.efi` arbitrario. Solo puede iniciar los cargadores de arranque específicos de Windows (como `winload.efi`)
+    y algunas herramientas de diagnóstico proporcionadas por Microsoft (como `memtest.exe`).
+    Lo expuesto arriba es el modelo teórico de cómo funciona `bcdedit` y el **BCD** en relación con la **NVRAM**, pero en 
+    la práctica, en el **BCD** solo deben registrarse entradas relacionadas con Windows y sus herramientas oficiales.
+
+`bcdedit` debe ejecutarse con **privilegios de administrador** desde una ventana de _PowerShell_ o _Símbolo del sistema_.
 
 Su forma de uso general es:
 
@@ -302,7 +362,7 @@ sudo efibootmgr -o 0003,0000
 
 #### 3.2.3. Crear una nueva entrada de arranque
 
-Cuando se instala un nuevo sistema operativo, gestor de arranque, o herraentamienta de arranque, generará su propia 
+Cuando se instala un nuevo sistema operativo, gestor de arranque, o herramienta de arranque, generará su propia 
 entrada en la [**ESP**](99-glosario.md#esp-efi-system-partition) y registrará una nueva entrada en la
 [**NVRAM**](99-glosario.md#nvram-non-volatile-random-access-memory). Sin embargo, en algunos casos puede ser necesario 
 crear manualmente una entrada de arranque (aunque improbable).
@@ -322,6 +382,45 @@ Basicamente, se trata de especificar la **ruta al archivo `.efi`** dentro de la 
     ???+ note "Sobre el GUID de la ESP"
         El GUID `{C12A7328-F81F-11D2-BA4B-00A0C93EC93B}` es el identificador estándar para la partición ESP en discos GPT.
 
+Vamos a ver dos supuestos:
+
+1. **Crear una nueva entrada de arranque para un archivo `.efi` recién copiado a la ESP:**
+
+Este proceso implica copiar una entrada de arranque existente para usarla como plantilla, y después modificarla para 
+que apunte al nuevo archivo `.efi`.
+
+```powershell
+bcdedit /copy "{existing-GUID}" /d "<Description>"
+```
+
+Esto devuelve un nuevo **GUID** para la entrada copiada y le asocia la descripción `<Description>`. Así, tenemos al
+final dos entradas apuntando al mismo archivo `.efi`, pero con distinta descripción. Ahora, habría que indicar a qué 
+archivo `.efi` debe apuntar la nueva entrada:
+
+```powershell
+bcdedit /set "{new-GUID}" device partition=<DriveLetter>:
+bcdedit /set "{new-GUID}" path "\EFI\<PathToNewEFIFile>.efi"
+```
+
+Por último, y de manera opcional, se puede modificar el orden de arranque tal y como se ha visto en la sección anterior.
+
+
+  Esto crea una copia de la entrada especificada por `{existing-GUID}` y le asigna la descripción `<Description>`.
+  El comando devuelve un nuevo **GUID** para la entrada copiada.
+
+  Luego, se debe configurar la ruta al nuevo archivo `.efi`:
+
+  ```powershell
+  bcdedit /set "{new-GUID}" device partition=<DriveLetter>:
+  bcdedit /set "{new-GUID}" path "\EFI\<PathToNewEFIFile>.efi"
+  ```
+
+```powershell
+
+2. Crear una nueva entrada de arranque para un archivo `.efi` existente en la ESP.
+
+
+
   ```powershell
   bcdedit /create /d "<Description>" /application firmware
   ```
@@ -334,6 +433,8 @@ Basicamente, se trata de especificar la **ruta al archivo `.efi`** dentro de la 
   bcdedit /set "{GUID}" device partition=<DriveLetter>:
   bcdedit /set "{GUID}" path "\EFI\<PathToEFIFile>.efi"
   ```
+
+asdf
 
 {%
     include-markdown "./.includes/footer.md"
