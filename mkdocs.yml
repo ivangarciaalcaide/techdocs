@@ -79,6 +79,7 @@ nav:
   - GNU/Linux:
       - Índice: gnu_linux/index.md
       - Configuración Apache2 para Adminer: gnu_linux/configuracion_apache_para_adminer.md
+      - Personalización de Ubuntu Server 24 LTS desde cero: gnu_linux/personalizacion_ubuntu_server.md
   - Windows:
       - Índice: windows/index.md
       - Preparación de Windows para Ansible: windows/preparacion_para_Ansible.md
