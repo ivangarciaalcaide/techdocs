@@ -8,6 +8,8 @@ Aquí redactaré mis trucos y documentos que uso para configurar mis sistemas y 
 
 ## Windows
 
+- [Preparación de Windows 10/11 para Ansible](windows/preparacion_para_Ansible.md)
+
 ## Manuales
 
 - [Entendiendo UEFI](manuales/entendiendo_uefi/index_uefi.md)

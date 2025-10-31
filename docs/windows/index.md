@@ -2,4 +2,4 @@
 
 Aquí irán los trucos y documentación de Windows.
 
-- Próximamente...
+- [Preparación de Windows para Ansible](preparacion_para_Ansible.md)
