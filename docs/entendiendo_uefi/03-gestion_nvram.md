@@ -690,6 +690,13 @@ sudo efibootmgr -t 10
     sudo efibootmgr -t <SEGUNDOS>
 ```
 
+#### 3.2.3 Conclusión
+Con esto se tienen suficientes herramientas y conocimientos para gestionar las entradas de arranque en la NVRAM de 
+sistemas **UEFI** tanto en **Windows** como en **GNU/Linux**.
+
+Aunque se puede seguir profundizando en las opciones avanzadas de `bcdedit` y `efibootmgr`, lo expuesto aquí cubre 
+las operaciones más comunes y necesarias para la mayoría de los usuarios.
+
 {%
     include-markdown "./.includes/footer.md"
 %}
