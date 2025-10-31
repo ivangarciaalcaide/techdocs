@@ -81,7 +81,7 @@ nav:
       - Configuración Apache2 para Adminer: gnu_linux/configuracion_apache_para_adminer.md
   - Windows:
       - Índice: windows/index.md
-      - Preparación de Windows para Ansible: windows/preparacion_windows_para_ansible.md
+      - Preparación de Windows para Ansible: windows/preparacion_para_Ansible.md
   - Manuales:
       - Índice: manuales/index.md
       - Entendiendo UEFI:
