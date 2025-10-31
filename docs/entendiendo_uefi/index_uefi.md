@@ -12,41 +12,8 @@ máquinas.
 
 ---
 
+<!--
 <span style="color: red; font-weight: bolder; font-size: 2em">PROBANDO...</span>
-
----
-
-# Estructura Sugerida para los Capítulos Prácticos
-
-Esta estructura prioriza las tareas fundamentales de gestión de arranque antes de pasar a temas más avanzados como PXE.
-
----
-
-## Capítulo 3: Gestión del Registro de Arranque UEFI (NVRAM)
-
-Este capítulo se enfoca en las herramientas nativas para manipular las entradas de arranque, aplicando directamente el concepto de la NVRAM (ver Punto 2.7).
-
-### 3.1. Herramientas de Gestión en Sistemas Modernos
-
-#### 3.1.1. `bcdedit` (Windows)  
-Introducción y sintaxis básica.
-
-#### 3.1.2. `efibootmgr` (Linux)  
-Introducción y sintaxis básica.
-
-### 3.2. Operaciones Fundamentales en la NVRAM
-
-#### 3.2.1. Visualizar las entradas de arranque existentes  
-(BootOrder, entradas BootXXXX).
-
-#### 3.2.2. Modificar el orden de arranque
-
-#### 3.2.3. Crear una nueva entrada de arranque  
-(Apuntando a un `.efi` específico en la ESP).
-
-#### 3.2.4. Eliminar entradas obsoletas
-
----
 
 ## Capítulo 4: Administrando Gestores de Arranque y Bootloaders
 
@@ -69,7 +36,6 @@ Resumen de la creación de la estructura de arranque con `bcdboot`.
 ### 4.3. Arranque de Reserva (Fallback Boot)  
 Explicación del archivo `\EFI\BOOT\BOOTX64.EFI`.
 
----
 
 ## Capítulo 5: Integración de la Seguridad (Secure Boot)
 
@@ -88,7 +54,7 @@ KEK, DB, DBX.
 
 #### 5.2.2. Registro y gestión de la clave del propietario de la máquina (MOK)
 
----
+
 
 ## Capítulo 6: Arranque Avanzado y Red (PXE)
 
@@ -118,6 +84,8 @@ Esta estructura permite avanzar de forma lógica:
 3. **Archivos (Cap. 4):** Cómo instalar y configurar el software de arranque real.  
 4. **Seguridad (Cap. 5):** Cómo se integra la seguridad en el proceso.  
 5. **Avanzado (Cap. 6):** Arranque por red.
+
+-->
 
 <!--
 Estructura Sugerida para los Capítulos Prácticos

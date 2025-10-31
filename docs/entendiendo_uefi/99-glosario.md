@@ -330,6 +330,18 @@ archivo.txt → apunta a → bloque #123, bloque #124...
 
 ---
 
+## Sistema de arvhivo virtual EFIVARFS
+**EFIVARFS** es un sistema de archivos virtual en Linux que expone las variables EFI almacenadas en la NVRAM del sistema 
+**UEFI**. 
+
+El kernel de Linux utiliza este sistema de archivos para permitir que utilidades como `efibootmgr` puedan leer, 
+escribir y modificar las variables de configuración del **firmware UEFI**.
+
+Se monta típicamente en `/sys/firmware/efi/efivars/` y cada variable EFI se representa como un archivo individual 
+dentro de este directorio.
+
+---
+
 ## Unidad
 El término **unidad** puede referirse a:
 
@@ -361,6 +373,19 @@ Características:
 - Entorno de prearranque con aplicaciones `.efi`.  
 
 Ejemplo: instalar Linux en modo UEFI requiere crear una partición ESP.
+
+---
+
+## Variables EFI
+Son una colección de pares clave-valor almacenados en la [NVRAM](#nvram-non-volatile-random-access-memory) del sistema
+UEFI que almacenan ajustes de configuración del firmware y del proceso de arranque. Por ejemplo:
+
+- `BootOrder`: define el orden de las entradas de arranque.  
+- `BootXXXX`: entradas individuales que apuntan a archivos `.efi` en la [ESP](#esp-efi-system-partition).  
+
+Tanto `bcdedit` (Windows) como `efibootmgr` (Linux) acceden y modifican estas variables para manipular el proceso de
+arranque. En los sistemas **GNU/Linux**, estas variables EFI se exponen a través del un sistema de archivos virtual
+de tipo `efivarfs` montado típicamente en `/sys/firmware/efi/efivars/`.
 
 {%
     include-markdown "./.includes/footer.md"
