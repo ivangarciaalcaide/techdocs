@@ -8,6 +8,9 @@ máquinas.
 - [01 - Introducción](01-introduccion.md)
 - [02 - Conceptos básicos](02-conceptos_basicos.md)
 - [03 - Gestión del Registro de Arranque UEFI (NVRAM)](03-gestion_nvram.md)
+- 04 - Administrando Gestores de Arranque y Bootloaders
+- 05 - Integración de la Seguridad (Secure Boot)
+- 06 - Arranque Avanzado y Red (PXE)
 - [Glosario](99-glosario.md)
 
 ---
