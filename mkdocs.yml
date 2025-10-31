@@ -77,11 +77,15 @@ markdown_extensions:
 nav:
   - "": index.md
   - GNU/Linux:
-      - Configuración Apache2 para Adminer: configuracion_apache_para_adminer.md
+      - Índice: gnu_linux/index.md
+      - Configuración Apache2 para Adminer: gnu_linux/configuracion_apache_para_adminer.md
+  - Windows:
+      - Índice: windows/index.md
   - Manuales:
+      - Índice: manuales/index.md
       - Entendiendo UEFI:
-        - Índice: entendiendo_uefi/index_uefi.md
-        - Introducción: entendiendo_uefi/01-introduccion.md
-        - Conceptos básicos: entendiendo_uefi/02-conceptos_basicos.md
-        - Gestión del registro de arranque UEFI (NVRAM): entendiendo_uefi/03-gestion_nvram.md
-        - Glosario: entendiendo_uefi/99-glosario.md
+        - Índice: manuales/entendiendo_uefi/index_uefi.md
+        - Introducción: manuales/entendiendo_uefi/01-introduccion.md
+        - Conceptos básicos: manuales/entendiendo_uefi/02-conceptos_basicos.md
+        - Gestión del registro de arranque UEFI (NVRAM): manuales/entendiendo_uefi/03-gestion_nvram.md
+        - Glosario: manuales/entendiendo_uefi/99-glosario.md
