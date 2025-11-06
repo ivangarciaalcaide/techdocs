@@ -90,4 +90,5 @@ nav:
         - Introducción: manuales/entendiendo_uefi/01-introduccion.md
         - Conceptos básicos: manuales/entendiendo_uefi/02-conceptos_basicos.md
         - Gestión del registro de arranque UEFI (NVRAM): manuales/entendiendo_uefi/03-gestion_nvram.md
+        - Seguridad en el Arranque (Secure Boot): manuales/entendiendo_uefi/04-secure_boot.md
         - Glosario: manuales/entendiendo_uefi/99-glosario.md

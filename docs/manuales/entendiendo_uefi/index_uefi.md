@@ -8,14 +8,78 @@ máquinas.
 - [01 - Introducción](01-introduccion.md)
 - [02 - Conceptos básicos](02-conceptos_basicos.md)
 - [03 - Gestión del Registro de Arranque UEFI (NVRAM)](03-gestion_nvram.md)
-- 04 - Administrando Gestores de Arranque y Bootloaders
-- 05 - Integración de la Seguridad (Secure Boot)
-- 06 - Arranque Avanzado y Red (PXE)
+- [04 - Seguridad en el Arranque (Secure Boot)](04-secure_boot.md)
+- 05 - Arranque por Red (PXE)
+- 06 - Configuración de Gestores de Arranque (GRUB y Windows Boot Manager)
 - [Glosario](99-glosario.md)
 
 ---
 
 <!--
+
+============
+Nuevo índice
+============
+
+Capítulo 3: Administración de Entradas en la NVRAM
+
+3.1. Herramientas de gestión en sistemas modernos
+
+3.1.1. bcdedit (Windows): introducción y sintaxis básica.
+
+3.1.2. efibootmgr (Linux): introducción y sintaxis básica.
+
+3.2. Operaciones fundamentales en la NVRAM
+
+3.2.1. Visualizar las entradas de arranque existentes.
+
+3.2.2. Modificar el orden de arranque.
+
+3.2.3. Crear una nueva entrada de arranque.
+
+3.2.4. Eliminar entradas obsoletas.
+
+Capítulo 4: Seguridad en el Arranque — Secure Boot
+
+4.1. Introducción al arranque seguro (Secure Boot)
+
+4.2. Cadena de confianza y verificación de firmas digitales
+
+4.3. Gestión de claves: PK, KEK, DB y DBX
+
+4.4. El componente shim en Linux y el MOK (Machine Owner Key)
+
+4.5. Deshabilitar temporalmente Secure Boot para pruebas
+
+Capítulo 5: Arranque por Red (PXE)
+
+5.1. Conceptos fundamentales del arranque PXE
+
+5.2. Rol del firmware UEFI en el arranque PXE
+
+5.3. Servidor DHCP y TFTP
+
+5.4. Diferencias con BIOS/PXE
+
+5.5. Uso opcional de iPXE como gestor avanzado
+
+Capítulo 6: Configuración de Gestores de Arranque (GRUB y Windows Boot Manager)
+
+6.1. Instalación y configuración básica de GRUB2 en UEFI
+
+6.2. Personalización del menú de GRUB
+
+6.3. Detección automática de otros sistemas operativos
+
+6.4. Integración de Windows Boot Manager
+
+6.5. El arranque de reserva (\EFI\BOOT\BOOTX64.EFI)
+
+
+
+---------------------------------------------
+
+
 <span style="color: red; font-weight: bolder; font-size: 2em">PROBANDO...</span>
 
 ## Capítulo 4: Administrando Gestores de Arranque y Bootloaders

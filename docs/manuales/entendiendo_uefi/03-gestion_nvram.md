@@ -1,6 +1,5 @@
 ---
 title: "Entendiendo UEFI: Gestión del registro de arranque UEFI (NVRAM)"
-toc_depth: 3
 ---
 
 # Entendiendo UEFI
