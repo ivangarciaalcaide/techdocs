@@ -299,3 +299,17 @@ interfaz UEFI). Una vez se entre en el modo _Custom Secure Boot_, se importan la
 
 ### 4.4. El componente shim en Linux y el MOK (Machine Owner Key)
 
+El mecanismo de **Secure Boot**, diseñado originalmente por los fabricantes y por **Microsoft**, impone que solo 
+puedan ejecutarse binarios firmados por entidades de confianza reconocidas por las claves incluidas en el firmware 
+(normalmente **Microsoft UEFI CA**). Esto plantea un problema para los sistemas **GNU/Linux**, cuyos cargadores 
+de arranque y núcleos no están firmados directamente por **Microsoft**.
+
+Para solventar esta limitación, las principales distribuciones de GNU/Linux (Ubuntu, Fedora, openSUSE, Debian, etc.) 
+utilizan un componente intermedio llamado **_shim_**, que actúa como un “**traductor de confianza**” entre el 
+**firmware UEFI** y el gestor de arranque **GRUB2**.
+
+#### 4.4.1. El Rol de Shim (Pre-cargador)
+
+El Shim (`shim.efi`) es un pequeño **cargador de arranque** cuya única función es actuar como el **primer binario de
+confianza** en el entorno **GNU/Linux**. Está firmado por **Microsoft** y sirve para validar y cargar GRUB2 (u otro
+bootloader) que esté firmado con una clave local de la distribución.
