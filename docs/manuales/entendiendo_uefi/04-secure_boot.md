@@ -286,7 +286,7 @@ interfaz UEFI). Una vez se entre en el modo _Custom Secure Boot_, se importan la
 
 ??? warning "Pierdes la **confianza** en firmas de terceros"
     Al sustituir las claves por unas propias, **pierdes la capacidad de arrancar sistemas operativos firmados por
-    terceros** (como Windows o distribuciones Linux que usan _shim_ firmado por Microsoft). Solo podrás arrancar
+    terceros** (como Windows o distribuciones GNU/Linux que usan _shim_ firmado por Microsoft). Solo podrás arrancar
     software firmado con tus propias claves. Generalmente, se puede firmar _shim_ con tus nuevas claves para permitir el 
     arranque de Linux, pero Windows dejará de funcionar.
 
@@ -297,10 +297,10 @@ interfaz UEFI). Una vez se entre en el modo _Custom Secure Boot_, se importan la
 
 ---
 
-### 4.4 El componente shim en Linux y el MOK (Machine Owner Key)
+### 4.4 El componente shim en GNU/Linux y el MOK (Machine Owner Key)
 
 El mecanismo de **Secure Boot**, definido por el **estándar UEFI**, fue adoptado y promovido por los principales
-fabricantes de hardware y **Microsot**, que mantiene una de las **autoridades de certificación** (CA) más utilizadas
+fabricantes de hardware y **Microsoft**, que mantiene una de las **autoridades de certificación** (CA) más utilizadas
 para firmar los binarios de arranque. Esto plantea un problema para los sistemas **GNU/Linux**, cuyos cargadores 
 de arranque y núcleos no están firmados directamente por **Microsoft**.
 
@@ -321,14 +321,14 @@ En resumen:
 
 1. _Canonical_, _Red Hat_ y otras distribuciones envían su binario `shim.efi` a **Microsoft** para que sea **firmado**
 con su certificado.
-2. Cuando el _firmware_ ejecuta el cargador, el `shim.efi` es validado sin problema contra su **DB** pues está firmado
+2. Cuando el _firmware_ ejecuta el cargador, el `shim.efi` es validado sin problema contra su **DB** ya que está firmado
 por **Microsoft**.
 3. **Shim** busca el siguiente binario a cargar y le pasa el control (generalmente a _GRUB2_). En lugar de las claves
 que hemos visto en el _firmware_ (_PK_, _KEK_, _DB_ y _DBX_) **Shim** utiliza sus propias claves incrustadas o las
 claves del **MOK** para verificar el binario de _GRUB_.
 
 Así, la **cadena de confianza** se extiende: el _firmware_ confía en Microsoft, que a su vez 
-**valida el shim**, y este, mediante **sus propias claves** (si viene de la propia distribución) o las del usuario 
+**firma el shim**, y este, mediante **sus propias claves** (si viene de la propia distribución) o las del usuario 
 (**MOK**), confía en el cargador de arranque del sistema GNU/Linux.
 
 <div style="text-align: center">
@@ -374,3 +374,144 @@ sudo mokutil --import MOK.crt
 En el siguiente arranque, tras importar una nueva clave, el sistema pedirá una confirmación y abrirá el **Mok 
 Manager**, que permite añadir la nueva clave definitivamente.
 
+## 4.5 Deshabilitar Secure Boot para pruebas
+
+Aunque **Secure Boot** es una característica de seguridad fundamental, puede ser necesario **deshabilitarlo**
+para realizar diagnósticos o pruebas de distinta índole. Esto permite ejecutar binarios de arranque no firmados.
+
+Algunos ejemplos de cuándo puede ser interesante o necesario:
+
+- **Compilación y pruebas de kernels personalizados** que aún no tienen la firma ni su registro en _MOK_. (Una vez 
+finalizadas las pruebas, se firma o se registra en _MOK_ y se vuelve a activar el **Secure Boot**).
+- **Instalación de sistemas operativos antiguos** o **herramientas de rescate** que no soportan Secure Boot.
+- Uso de algunos **_live USBs_**.
+- **Depuración de arranque** en entornos de laboratorio o máquinas virtuales.
+- **Uso de gestores de arranque no estándar** (como _rEFInd_ sin firmar).
+- **Instalación de claves personalizadas** (_PK_, _KEK_, _DB_ y _DBX_)
+
+??? warning "Reactivación de _Secure Boot_"
+    No se recomienda mantenerlo deshabilitado de forma permanente. Una vez acabadas las tareas para las que fue 
+    necesaria su desactivación, es más que recomendable volver a activar. 
+
+La desactivación es una función del **firmware UEFI** y, por tanto, el procedimiento varía de unos fabricantes a
+otros. Generalmente, hay que acceder a la configuración del firmware manteniendo pulsada alguna tecla concreta como
+`F2` o `Del` al comienzo del proceso de inicio de la máquina.
+
+??? note
+    Queda fuera del alcance de este documento el procedimiento concreto por las numerosas posibilidades según
+    fabricante y versión del firmware.
+
+En muchos firmwares, la opción de deshabilitar **Secure Boot** está asociada a otras configuraciones interesantes de
+mencionar:
+
+| Opción de Configuración           | Propósito                                                                                                                                                                                                |
+|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **CSM Mode** / **Legacy Support** | Habilitar el Modo de Compatibilidad (CSM) a menudo deshabilita Secure Boot automáticamente, ya que CSM es incompatible con la verificación de firmas.                                                    |
+| **Secure Boot Mode**              | Permite cambiar entre Standard (estándar, usando claves de fábrica) y Custom (personalizado, permitiendo al usuario manipular PK, KEK, etc.). Elegir Custom es el paso previo a instalar claves propias. |
+| **Clear Secure Boot Keys**        | Borrar la PK (Platform Key). Esto fuerza al sistema a entrar en Setup Mode (Modo de Configuración) y efectivamente deshabilita Secure Boot hasta que se instale una nueva PK.                            |
+
+??? note "Modo **CSM**"
+    El **Modo CSM (Compatibility Support Module)** es una característica clave del **firmware UEFI** diseñada para 
+    garantizar la compatibilidad con sistemas operativos, hardware y discos duros más antiguos que fueron diseñados 
+    para el antiguo estándar **BIOS (Basic Input/Output System)**.
+
+A continuación, se exponen algunos comandos relacionados que pueden ser interesantes aunque no se profundice en su uso
+(casi todo relativo a GNU/Linux):
+
+**Comprobar estado de Secure Boot**
+
+```bash
+# ¿Secure Boot activo?
+mokutil --sb-state
+# Ejemplo salida: "SecureBoot enabled" o "SecureBoot disabled"
+
+# ¿El sistema arrancó vía UEFI?
+[ -d /sys/firmware/efi ] && echo "UEFI" || echo "Legacy/BIOS"
+```
+
+```powershell
+# ¿Secure Boot activo?: True → Secure Boot activado, False → desactivado
+Confirm-SecureBootUEFI
+
+# ¿El sistema arrancó vía UEFI? Si la lista de números que devuelve sale el 28, ha arrancado con UEFI
+(Get-CimInstance win32_bios).BiosCharacteristics 
+
+# También puede probarse si lo siguiente devuelve True:
+(Get-CimInstance win32_bios).BiosCharacteristics -contains 28
+```
+
+**Exportar / inspeccionar certificados (DB, DBX, PK, KEK)**
+
+```bash
+# Listar clave/s PK
+mokutil --pk
+
+# Listar clave/s KEK
+mokutil --kek
+
+# Listar clave/s DB
+mokutil --db
+
+# Listar clave/s DBX
+mokutil --dbx
+```
+
+**Ver / gestionar MOK (Linux)**
+
+```bash
+# ¿Secure Boot? (repetido porque MOK está relacionado)
+mokutil --sb-state
+
+# listar claves MOK actualmente inscritas
+mokutil --list-enrolled
+
+# exportar la lista de MOK a un fichero
+mokutil --export > moklist.der
+
+# importar una nueva clave (te pedirá contraseña para confirmar en el reinicio)
+mokutil --import MOK.crt
+# --> en el siguiente arranque aparecerá MokManager para confirmar la importación
+
+# eliminar una MOK (requiere también MokManager en reinicio)
+sudo mokutil --default-password   # (solo ejemplo, ver proceso; normalmente mokutil --delete)
+```
+
+**Firmar un .efi (para que shim/DB lo acepte)**
+
+```bash
+# firmar un loader.efi
+sbsign --key DB.key --cert DB.crt --output grubx64.signed.efi grubx64.efi
+```
+
+??? note
+    El `.signed.efi` resultante contendrá una firma que el firmware o shim puede validar si la clave está en 
+    **DB**/**MOK**.
+
+**Firmar módulos del kernel (Linux)**
+
+```bash
+# firmar un módulo con la clave MOK
+sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 MOK.key MOK.crt /lib/modules/$(uname -r)/kernel/.../mi_modulo.ko
+```
+
+**Manipular claves UEFI desde Linux**
+
+```bash
+# listar variables (efitools)
+sudo efi-readvar -v
+
+# importar una auth file a la variable (ejemplo con efi-updatevar)
+# requiere efitools y privilegios; sustituir PATHS y NOMBRES según tu firmware
+sudo efi-updatevar -f PK.auth PK
+sudo efi-updatevar -f KEK.auth KEK
+sudo efi-updatevar -f DB.auth DB
+```
+
+??? note "'efitools' ha de estar instalado"
+    Dependiendo del sistema GNU/Linux concreto:
+    ```bash
+    apt install efitools
+    pacman -S efitools
+    zypper install efitools
+    dnf install efitools
+    ```
