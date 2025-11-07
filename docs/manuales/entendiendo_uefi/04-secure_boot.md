@@ -297,19 +297,80 @@ interfaz UEFI). Una vez se entre en el modo _Custom Secure Boot_, se importan la
 
 ---
 
-### 4.4. El componente shim en Linux y el MOK (Machine Owner Key)
+### 4.4 El componente shim en Linux y el MOK (Machine Owner Key)
 
-El mecanismo de **Secure Boot**, diseñado originalmente por los fabricantes y por **Microsoft**, impone que solo 
-puedan ejecutarse binarios firmados por entidades de confianza reconocidas por las claves incluidas en el firmware 
-(normalmente **Microsoft UEFI CA**). Esto plantea un problema para los sistemas **GNU/Linux**, cuyos cargadores 
+El mecanismo de **Secure Boot**, definido por el **estándar UEFI**, fue adoptado y promovido por los principales
+fabricantes de hardware y **Microsot**, que mantiene una de las **autoridades de certificación** (CA) más utilizadas
+para firmar los binarios de arranque. Esto plantea un problema para los sistemas **GNU/Linux**, cuyos cargadores 
 de arranque y núcleos no están firmados directamente por **Microsoft**.
 
 Para solventar esta limitación, las principales distribuciones de GNU/Linux (Ubuntu, Fedora, openSUSE, Debian, etc.) 
 utilizan un componente intermedio llamado **_shim_**, que actúa como un “**traductor de confianza**” entre el 
 **firmware UEFI** y el gestor de arranque **GRUB2**.
 
-#### 4.4.1. El Rol de Shim (Pre-cargador)
+#### 4.4.1 El Rol de Shim (Pre-cargador)
 
 El Shim (`shim.efi`) es un pequeño **cargador de arranque** cuya única función es actuar como el **primer binario de
 confianza** en el entorno **GNU/Linux**. Está firmado por **Microsoft** y sirve para validar y cargar GRUB2 (u otro
-bootloader) que esté firmado con una clave local de la distribución.
+[bootloader](99-glosario.md#bootloader-cargador-de-arranque)) que esté firmado con una clave local de la distribución.
+
+Su papel es esencial pues permite que un sistema **GNU/Linux** arranque sin problema **manteniendo el Secure Boot
+activado** sin requerir que el **firmware UEFI** confíe directamente en las claves del desarrollador o del usuario.
+
+En resumen:
+
+1. _Canonical_, _Red Hat_ y otras distribuciones envían su binario `shim.efi` a **Microsoft** para que sea **firmado**
+con su certificado.
+2. Cuando el _firmware_ ejecuta el cargador, el `shim.efi` es validado sin problema contra su **DB** pues está firmado
+por **Microsoft**.
+3. **Shim** busca el siguiente binario a cargar y le pasa el control (generalmente a _GRUB2_). En lugar de las claves
+que hemos visto en el _firmware_ (_PK_, _KEK_, _DB_ y _DBX_) **Shim** utiliza sus propias claves incrustadas o las
+claves del **MOK** para verificar el binario de _GRUB_.
+
+Así, la **cadena de confianza** se extiende: el _firmware_ confía en Microsoft, que a su vez 
+**valida el shim**, y este, mediante **sus propias claves** (si viene de la propia distribución) o las del usuario 
+(**MOK**), confía en el cargador de arranque del sistema GNU/Linux.
+
+<div style="text-align: center">
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '14px', 'fontFamily': 'Inter'}}}%%
+flowchart TD
+    A["**UEFI**<br/>(Secure Boot habilitado)"] -->|Verifica firma Microsoft| B["**shim.efi**<br/>(firmado por Microsoft)"]
+    B -->|Verifica firma local| C["**grubx64.efi**<br/>(firmado por distro o admin)"]
+    C -->|Verifica firma con MOK| D["**vmlinuz**<br/>(kernel de Linux)"]
+    D --> E[**Sistema operativo iniciado**]
+
+    classDef default fill:#eeeeee,stroke:#333,stroke-width:1px
+```
+</div>
+
+#### 4.4.2 El MOK (Machine Owner Key)
+
+Cuando un usuario recompila el _kernel_ o un _módulo de driver_ (no lo está haciendo la propia distribución), ese
+binario **no** está firmado. Si **Secure Boot** está activo, el sistema no podrá arrancar.
+
+El **MOK** es un mecanismo que permite al _usuario_ o al _administrador del sistema_ **añadir sus propias claves
+públicas** a un almacén gestionado por el _propio Shim_. Así, en el caso del párrafo anterior, podrá firmar
+y solventar el arranque de su sistema personalizado.
+
+**MOK** se gestiona con la herramienta `mokutil`, y las claves se almacenan en la base de datos `MokList` (similar,
+pero completamente independiente de **DB** y **DBX**).
+
+Un ejemplo básico de uso:
+
+```bash
+# Crear una nueva clave MOK (par pública/privada)
+openssl req -new -x509 -newkey rsa:2048 -keyout MOK.key -out MOK.crt \
+  -subj "/CN=MiClaveMOK/" -days 3650 -nodes -sha256
+
+# Firmar un módulo de kernel usando la clave MOK recién creada
+sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 MOK.key MOK.crt /path/to/mimodulo.ko
+
+# Registrar la clave en el sistema
+sudo mokutil --import MOK.crt
+```
+
+En el siguiente arranque, tras importar una nueva clave, el sistema pedirá una confirmación y abrirá el **Mok 
+Manager**, que permite añadir la nueva clave definitivamente.
+
