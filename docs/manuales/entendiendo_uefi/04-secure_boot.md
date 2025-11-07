@@ -374,7 +374,7 @@ sudo mokutil --import MOK.crt
 En el siguiente arranque, tras importar una nueva clave, el sistema pedirá una confirmación y abrirá el **Mok 
 Manager**, que permite añadir la nueva clave definitivamente.
 
-## 4.5 Deshabilitar Secure Boot para pruebas
+### 4.5 Deshabilitar Secure Boot para pruebas
 
 Aunque **Secure Boot** es una característica de seguridad fundamental, puede ser necesario **deshabilitarlo**
 para realizar diagnósticos o pruebas de distinta índole. Esto permite ejecutar binarios de arranque no firmados.
@@ -414,6 +414,8 @@ mencionar:
     El **Modo CSM (Compatibility Support Module)** es una característica clave del **firmware UEFI** diseñada para 
     garantizar la compatibilidad con sistemas operativos, hardware y discos duros más antiguos que fueron diseñados 
     para el antiguo estándar **BIOS (Basic Input/Output System)**.
+
+### 4.6 Algunos comandos relacionados
 
 A continuación, se exponen algunos comandos relacionados que pueden ser interesantes aunque no se profundice en su uso
 (casi todo relativo a GNU/Linux):
@@ -483,7 +485,7 @@ sudo mokutil --default-password   # (solo ejemplo, ver proceso; normalmente moku
 sbsign --key DB.key --cert DB.crt --output grubx64.signed.efi grubx64.efi
 ```
 
-??? note
+??? note "Nota"
     El `.signed.efi` resultante contendrá una firma que el firmware o shim puede validar si la clave está en 
     **DB**/**MOK**.
 
