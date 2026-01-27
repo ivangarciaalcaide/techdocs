@@ -95,6 +95,13 @@ distintos servidores. Así, edito el prompt en el fichero del tema correspondien
 PROMPT='%{$fg[$NCOLOR]%}%B%m@%n%b%{$reset_color%}:%{$fg[blue]%}%B%c/%b%{$reset_color%} $(git_prompt_info)%(!.#.$) '
 [...]
 ```
+Por otro lado, está bien incrementar la capacidad del historial. Editamos `~/.bashrc`:
+```text
+[...]
+HISTSIZE=10000
+HISTFILESIZE=20000
+[...]
+```
 
 ## Personalizar VIM
 
@@ -171,3 +178,32 @@ los plugins especificados en `~/.vim`.
 !!! note "Nota"
     Cada usuario debe ejecutar `:PlugInstall` la primera vez que use **VIM** para instalar los plugins en su
     directorio personal.
+
+## Instalación de herramientas varias
+
+Aparte de todo, está bien tener algunas herramientas básicas:
+
+- **htop** para ver procesos y uso de CPU/memoria.
+- **ncdu** para explorar discos y ver qué ocupa espacio.
+
+```bash
+apt install htop ncdu
+```
+
+## Configuración de SSH
+Si voy a acceder remotamente al servidor, configuro SSH para poner las claves públicas de los usuarios autorizados:
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+vi ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+```
+
+!!! note "Nota"
+
+La clave pública mía y que se encuentra en el usuario `ivangarciaalcaide` en [GitHub](https://github.com) es:
+
+```text
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCncDvx2IDHxk19PA/B7cTwf0/aPRkRZnoyi3ps1lBzIK+Z5J2Hikbw5YlTxr6r70n/fcdzElMY4i63aex2A2QCe7QbhWVmxJ8ptfiP4B+hhonAMnPub/iS7/ZDd5s/iGMRce0X1WBNfII++qCr9Yi0qHbNb1LAF0Vq3EXTVtRCvajnA2bGyy/Sy9YdvUr514wAR2lP6iNzINrqSGU1T8UUZSfgto1h7Akw4hKXr0ZMH2+vXAQHIoo1fnN9+Z/z2PJe5pwpQQz1RJin6LEo/egkV2oCQKtRJ0ZONbJKg0GR8iu66h+IDi+0PHZBJ05IUZrPM20PzaTOpzk9K/DG03nF ivangarciaalcaide@github/122454195 # ssh-import-id gh:ivangarciaalcaide
+```
