@@ -201,7 +201,6 @@ chmod 600 ~/.ssh/authorized_keys
 ```
 
 !!! note "Nota"
-
 La clave pública mía y que se encuentra en el usuario `ivangarciaalcaide` en [GitHub](https://github.com) es:
 
 ```text
