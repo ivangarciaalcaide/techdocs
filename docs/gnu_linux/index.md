@@ -6,3 +6,4 @@ Aquí irán mis trucos y documentación sobre GNU/Linux.
 
 - [Configuración de Apache para Adminer](configuracion_apache_para_adminer.md)
 - [Personalización de Ubuntu Server 24 LTS desde cero](personalizacion_ubuntu_server.md)
+- [Instalación de Docker en Ubuntu Server 24 LTS](instalacion_docker.md)
