@@ -15,5 +15,5 @@ Aquí redactaré mis trucos y documentos que uso para configurar mis sistemas y 
 ## Manuales
 
 - [Entendiendo UEFI](manuales/entendiendo_uefi/index_uefi.md)
-- Ansible básico (Proximamente)
+- [Ansible básico](manuales/ansible/index_ansible.md)
 
