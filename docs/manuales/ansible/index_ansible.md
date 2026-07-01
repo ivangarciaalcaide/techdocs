@@ -8,6 +8,8 @@ instalarlo en distribuciones Debian/Ubuntu y derivadas y cómo configurarlo de m
 
 ## Índice
 - [01 - Introducción](01-introduccion.md)
+- [02 - Instalación y entorno de pruebas](02-instalacion.md)
+- [03 - Módulos y comandos ad-hoc](03-modulos.md)
 
 
 ---
