@@ -10,7 +10,8 @@ instalarlo en distribuciones Debian/Ubuntu y derivadas y cómo configurarlo de m
 - [01 - Introducción](01-introduccion.md)
 - [02 - Instalación y entorno de pruebas](02-instalacion.md)
 - [03 - Módulos y comandos ad-hoc](03-modulos.md)
-
+- [04 - Playbooks, YAML e inventario](04-playbooks1.md)
+- [05 - Escribir y ejecutar playbooks](05-playbooks2.md)
 
 ---
 

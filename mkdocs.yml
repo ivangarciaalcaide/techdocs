@@ -57,6 +57,7 @@ markdown_extensions:
        guess_lang: false
    - pymdownx.critic
    - pymdownx.details
+   - pymdownx.keys
    - pymdownx.highlight:
        anchor_linenums: true
        use_pygments: true
@@ -98,3 +99,5 @@ nav:
           - Introducción: manuales/ansible/01-introduccion.md
           - Instalación y entorno de pruebas: manuales/ansible/02-instalacion.md
           - Módulos y comandos ad-hoc: manuales/ansible/03-modulos.md
+          - Playbooks, YAML e inventario: manuales/ansible/04-playbooks1.md
+          - Escribir y ejecutar playbooks: manuales/ansible/05-playbooks2.md
